@@ -1,160 +1,141 @@
 ---
-title: 2 Vorverarbeitung & Validierung einer Zeitreihe
+title: "2 Vorverarbeitung & Validierung einer Zeitreihe"
 ---
 
 # 2 Vorverarbeitung & Validierung einer Zeitreihe
 
-Bevor eine Zeitreihe analysiert wird, muss sie **formal korrekt und
-konsistent** sein.
+Bevor eine Zeitreihe analysiert wird, muss sie **formal korrekt und konsistent** sein.
 
 Viele Fehler in späteren Analysen entstehen durch:
 
--   unsortierte Zeitstempel
--   doppelte Zeitpunkte
--   fehlende Werte
--   unregelmäßige Abtastung
--   implizite Zeitlücken
-
-------------------------------------------------------------------------
+- unsortierte Zeitstempel
+- doppelte Zeitpunkte
+- fehlende Werte
+- unregelmäßige Abtastung
+- implizite Zeitlücken
 
 ::: {.callout-note title="Merke"}
-Zeitreihenanalyse ist nur so gut wie die Datenbasis. Validierung ist
-kein optionaler Schritt.
+Zeitreihenanalyse ist nur so gut wie die Datenbasis.
+Validierung ist kein optionaler Schritt.
 :::
-
-------------------------------------------------------------------------
 
 ## 2.1 Beispiel-Zeitreihe mit Problemen
 
-Wir erzeugen bewusst eine fehlerhafte Zeitreihe.
+Wir erzeugen bewusst eine fehlerhafte Zeitreihe (unsortiert, Duplikate, Missing Values).
 
-``` {python}
+```{python}
 import numpy as np
 import pandas as pd
 
 rng = np.random.default_rng(1)
 
-t = pd.date_range("2025-01-01", periods=24*3, freq="H")
-y = pd.Series(10 + rng.normal(size=len(t)), index=t)
+t = pd.date_range("2025-01-01", periods=24*3, freq="h")
+y = pd.Series(10 + rng.normal(size=len(t)), index=t, name="signal")
 
 # Probleme erzeugen
-y = y.sample(frac=1)          # unsortiert
-y = y.append(y.iloc[5:8])     # Duplikate
-y.iloc[10:15] = np.nan        # fehlende Werte
+y = y.sample(frac=1)                      # unsortiert
+y = pd.concat([y, y.iloc[5:8]])           # Duplikate (append ist deprecated/entfernt)
+y.iloc[10:15] = np.nan                    # fehlende Werte
 
 y.head()
 ```
 
-------------------------------------------------------------------------
+## 2.2 Schritt 1: Sortierung sicherstellen
 
-## 2.2 Schritt 1: Sortierung prüfen
-
-``` {python}
+```{python}
 y = y.sort_index()
 ```
 
-------------------------------------------------------------------------
+## 2.3 Schritt 2: Duplikate erkennen und behandeln
 
-## 2.3 Schritt 2: Duplikate erkennen
+Duplikate erkennen:
 
-``` {python}
-duplicates = y.index.duplicated()
-y[duplicates]
+```{python}
+dup_mask = y.index.duplicated(keep=False)
+y[dup_mask].head(10)
 ```
 
-Duplikate müssen methodisch entschieden behandelt werden:
+Duplikate müssen methodisch entschieden behandelt werden, z. B.:
 
--   Mittelwert bilden?
--   Ersten Wert behalten?
--   Letzten Wert behalten?
--   Entfernen?
+- Mittelwert pro Zeitstempel (typisch bei Messwerten)
+- ersten/letzten Wert behalten (typisch bei Status-Updates)
+- entfernen (wenn klar fehlerhaft)
 
 Beispiel: Mittelwert pro Zeitstempel
 
-``` {python}
+```{python}
 y = y.groupby(level=0).mean()
 ```
 
-------------------------------------------------------------------------
-
 ## 2.4 Schritt 3: Fehlende Werte analysieren
 
-``` {python}
+```{python}
 y.isna().sum()
 ```
 
-Visualisierung der Lücken:
+### Visualisierung der Lücken
 
-``` {python}
+```{python}
+import matplotlib.pyplot as plt
+
 y.plot(title="Zeitreihe mit Missing Values")
+plt.show()
 ```
 
-Behandlungsmöglichkeiten:
+### Behandlungsmöglichkeiten
 
-``` {python}
+```{python}
 y_ffill = y.ffill()
 y_interp = y.interpolate("time")
 ```
 
-------------------------------------------------------------------------
-
 ::: {.callout-tip title="Entscheidungshilfe"}
--   ffill: sinnvoll bei „Zustandsdaten"
--   interpolate: sinnvoll bei kontinuierlichen Messgrößen
+- `ffill`: sinnvoll bei Zustandsdaten („gilt bis zur nächsten Messung“)
+- `interpolate("time")`: sinnvoll bei kontinuierlichen Messgrößen
 :::
-
-------------------------------------------------------------------------
 
 ## 2.5 Schritt 4: Abtastrate prüfen
 
 Ist die Zeitreihe regelmäßig?
 
-``` {python}
+```{python}
 diffs = y.index.to_series().diff()
 diffs.value_counts().head()
 ```
 
-Wenn mehrere Zeitabstände auftreten → unregelmäßige Abtastung.
-
-------------------------------------------------------------------------
+Wenn mehrere Zeitabstände auftreten → unregelmäßige Abtastung oder Zeitlücken.
 
 ## 2.6 Zeitlücken explizit machen
 
-``` {python}
-y_regular = y.asfreq("H")
+Mit `asfreq` wird die erwartete Frequenz erzwungen.
+Fehlende Zeitpunkte werden als NaN sichtbar.
+
+```{python}
+y_regular = y.asfreq("h")
 y_regular.isna().sum()
 ```
-
-Jetzt werden fehlende Zeitpunkte sichtbar.
-
-------------------------------------------------------------------------
 
 ::: {.callout-warning title="Achtung"}
 Ohne explizite Frequenz können Zeitlücken unsichtbar bleiben.
 :::
 
-------------------------------------------------------------------------
-
 ## 2.7 Validierungs-Checkliste
 
 Bevor Sie weiter analysieren:
 
--   [ ] Index ist DatetimeIndex
--   [ ] Zeitreihe ist sortiert
--   [ ] Keine Duplikate
--   [ ] Fehlende Werte identifiziert
--   [ ] Abtastrate geprüft
--   [ ] Frequenz explizit gesetzt
-
-------------------------------------------------------------------------
+- [ ] Index ist `DatetimeIndex`
+- [ ] Zeitreihe ist sortiert
+- [ ] Duplikate identifiziert und begründet behandelt
+- [ ] Fehlende Werte identifiziert und Strategie gewählt
+- [ ] Abtastrate geprüft
+- [ ] Frequenz (falls sinnvoll) explizit gesetzt
 
 ## 2.8 Mini-Aufgabe
 
 Erzeugen Sie selbst eine Zeitreihe mit:
 
--   unregelmäßiger Abtastung
--   5 fehlenden Zeitpunkten
--   3 Duplikaten
+- unregelmäßiger Abtastung
+- 5 fehlenden Zeitpunkten
+- 3 Duplikaten
 
-Implementieren Sie anschließend eine saubere Validierung gemäß
-Checkliste.
+Implementieren Sie anschließend eine saubere Validierung gemäß Checkliste.

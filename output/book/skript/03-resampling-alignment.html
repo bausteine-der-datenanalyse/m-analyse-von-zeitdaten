@@ -6,15 +6,8 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="author" content="Lukas Arnold">
-<meta name="author" content="Simone Arnold">
-<meta name="author" content="Florian Bagemihl">
-<meta name="author" content="Matthias Baitsch">
-<meta name="author" content="Marc Fehr">
-<meta name="author" content="Maik Poetzsch">
-<meta name="author" content="Sebastian Seipel">
 
-<title>Zeitreihenanalyse</title>
+<title>3&nbsp; 3 Resampling &amp; Alignment – Zeitreihenanalyse</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -27,28 +20,64 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
-<script src="site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="site_libs/quarto-nav/headroom.min.js"></script>
-<script src="site_libs/clipboard/clipboard.min.js"></script>
-<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
-<script src="site_libs/quarto-search/fuse.min.js"></script>
-<script src="site_libs/quarto-search/quarto-search.js"></script>
-<meta name="quarto:offset" content="./">
-<link href="./skript/01-einleitung.html" rel="next">
-<link href="./skript/00-bilder/favicon_bcd_new.svg" rel="icon" type="image/svg+xml">
-<script src="site_libs/quarto-html/quarto.js" type="module"></script>
-<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="site_libs/quarto-html/popper.min.js"></script>
-<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="site_libs/quarto-html/anchor.min.js"></script>
-<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-37eea08aefeeee20ff55810ff984fec1.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-43eee54d0d73e4db03bc2295c2af38c5.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../skript/04-glaettung.html" rel="next">
+<link href="../skript/02-vorverarbeitung-validierung.html" rel="prev">
+<link href="../skript/00-bilder/favicon_bcd_new.svg" rel="icon" type="image/svg+xml">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-37eea08aefeeee20ff55810ff984fec1.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-43eee54d0d73e4db03bc2295c2af38c5.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -89,7 +118,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Seitenleiste umschalten" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./index.html">Preamble</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../skript/03-resampling-alignment.html"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">3 Resampling &amp; Alignment</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Seitenleiste umschalten" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Suchen" onclick="window.quartoOpenSearch();">
@@ -103,14 +132,14 @@ ul.task-list li input[type="checkbox"] {
 <!-- sidebar -->
   <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
     <div class="pt-lg-2 mt-2 text-left sidebar-header sidebar-header-stacked">
-      <a href="./index.html" class="sidebar-logo-link">
-      <img src="./skript/00-bilder/logo_bcd_new.svg" alt="" class="sidebar-logo py-0 d-lg-inline d-none">
+      <a href="../index.html" class="sidebar-logo-link">
+      <img src="../skript/00-bilder/logo_bcd_new.svg" alt="" class="sidebar-logo py-0 d-lg-inline d-none">
       </a>
     <div class="sidebar-title mb-0 py-0">
-      <a href="./">Zeitreihenanalyse</a> 
+      <a href="../">Zeitreihenanalyse</a> 
         <div class="sidebar-tools-main">
     <a href="https://github.com/bausteine-der-datenanalyse/a-analyse-von-zeitdaten" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
-    <a href="./Zeitreihenanalyse.pdf" title="Download PDF" class="quarto-navigation-tool px-1" aria-label="Download PDF"><i class="bi bi-file-pdf"></i></a>
+    <a href="../Zeitreihenanalyse.pdf" title="Download PDF" class="quarto-navigation-tool px-1" aria-label="Download PDF"><i class="bi bi-file-pdf"></i></a>
 </div>
     </div>
       </div>
@@ -123,73 +152,73 @@ ul.task-list li input[type="checkbox"] {
     <ul class="list-unstyled mt-1">
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./index.html" class="sidebar-item-text sidebar-link active">
+  <a href="../index.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Preamble</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./skript/01-einleitung.html" class="sidebar-item-text sidebar-link">
+  <a href="../skript/01-einleitung.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">1 Einordnung: Zeitreihen als Messprozess</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./skript/02-vorverarbeitung-validierung.html" class="sidebar-item-text sidebar-link">
+  <a href="../skript/02-vorverarbeitung-validierung.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">2 Vorverarbeitung &amp; Validierung einer Zeitreihe</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./skript/03-resampling-alignment.html" class="sidebar-item-text sidebar-link">
+  <a href="../skript/03-resampling-alignment.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">3 Resampling &amp; Alignment</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./skript/04-glaettung.html" class="sidebar-item-text sidebar-link">
+  <a href="../skript/04-glaettung.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">4 Glättung &amp; Rauschreduktion</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./skript/05-trend-saison.html" class="sidebar-item-text sidebar-link">
+  <a href="../skript/05-trend-saison.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">5 Trend &amp; Saison</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./skript/06-lags-autokorrelation.html" class="sidebar-item-text sidebar-link">
+  <a href="../skript/06-lags-autokorrelation.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">6 Lags &amp; Autokorrelation</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./skript/07-anomalien.html" class="sidebar-item-text sidebar-link">
+  <a href="../skript/07-anomalien.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">7 Anomalien</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./skript/08-forecasting-baselines.html" class="sidebar-item-text sidebar-link">
+  <a href="../skript/08-forecasting-baselines.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">8 Forecasting-Baselines &amp; Bewertung</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./skript/09-lernzielkontrolle.html" class="sidebar-item-text sidebar-link">
+  <a href="../skript/09-lernzielkontrolle.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">9 Lernzielkontrolle</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./skript/10-uebung.html" class="sidebar-item-text sidebar-link">
+  <a href="../skript/10-uebung.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">10 Übung: Zeitreihen-Workflow</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./skript/11-klausurfragen.html" class="sidebar-item-text sidebar-link">
+  <a href="../skript/11-klausurfragen.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">11 Klausurfragen</span></span></a>
   </div>
 </li>
@@ -203,52 +232,31 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">Inhaltsverzeichnis</h2>
    
   <ul>
-  <li><a href="#preamble" id="toc-preamble" class="nav-link active" data-scroll-target="#preamble">Preamble</a></li>
-  <li><a href="#intro" id="toc-intro" class="nav-link" data-scroll-target="#intro">Intro</a>
+  <li><a href="#resampling-alignment" id="toc-resampling-alignment" class="nav-link active" data-scroll-target="#resampling-alignment"><span class="header-section-number">4</span> 3 Resampling &amp; Alignment</a>
   <ul class="collapse">
-  <li><a href="#voraussetzungen" id="toc-voraussetzungen" class="nav-link" data-scroll-target="#voraussetzungen">Voraussetzungen</a></li>
-  <li><a href="#verwendete-pakete-und-datensätze" id="toc-verwendete-pakete-und-datensätze" class="nav-link" data-scroll-target="#verwendete-pakete-und-datensätze">Verwendete Pakete und Datensätze</a>
-  <ul class="collapse">
-  <li><a href="#pakete" id="toc-pakete" class="nav-link" data-scroll-target="#pakete">Pakete</a></li>
-  <li><a href="#datensätze" id="toc-datensätze" class="nav-link" data-scroll-target="#datensätze">Datensätze</a></li>
-  </ul></li>
-  <li><a href="#bearbeitungszeit" id="toc-bearbeitungszeit" class="nav-link" data-scroll-target="#bearbeitungszeit">Bearbeitungszeit</a></li>
-  <li><a href="#lernziele" id="toc-lernziele" class="nav-link" data-scroll-target="#lernziele">Lernziele</a></li>
+  <li><a href="#ausgangszeitreihe-stündlich" id="toc-ausgangszeitreihe-stündlich" class="nav-link" data-scroll-target="#ausgangszeitreihe-stündlich"><span class="header-section-number">4.1</span> 3.1 Ausgangszeitreihe (stündlich)</a></li>
+  <li><a href="#downsampling-aggregation" id="toc-downsampling-aggregation" class="nav-link" data-scroll-target="#downsampling-aggregation"><span class="header-section-number">4.2</span> 3.2 Downsampling (Aggregation)</a></li>
+  <li><a href="#upsampling-interpolation" id="toc-upsampling-interpolation" class="nav-link" data-scroll-target="#upsampling-interpolation"><span class="header-section-number">4.3</span> 3.3 Upsampling (Interpolation)</a></li>
+  <li><a href="#alignment-zweier-zeitreihen" id="toc-alignment-zweier-zeitreihen" class="nav-link" data-scroll-target="#alignment-zweier-zeitreihen"><span class="header-section-number">4.4</span> 3.4 Alignment zweier Zeitreihen</a></li>
+  <li><a href="#häufige-fehlerquellen" id="toc-häufige-fehlerquellen" class="nav-link" data-scroll-target="#häufige-fehlerquellen"><span class="header-section-number">4.5</span> 3.5 Häufige Fehlerquellen</a></li>
+  <li><a href="#mini-aufgabe" id="toc-mini-aufgabe" class="nav-link" data-scroll-target="#mini-aufgabe"><span class="header-section-number">4.6</span> 3.6 Mini-Aufgabe</a></li>
   </ul></li>
   </ul>
-<div class="toc-actions"><ul><li><a href="https://github.com/bausteine-der-datenanalyse/a-analyse-von-zeitdaten/blob/main/index.qmd" class="toc-action"><i class="bi bi-github"></i>Quellcode anzeigen</a></li></ul></div></nav>
+<div class="toc-actions"><ul><li><a href="https://github.com/bausteine-der-datenanalyse/a-analyse-von-zeitdaten/blob/main/skript/03-resampling-alignment.qmd" class="toc-action"><i class="bi bi-github"></i>Quellcode anzeigen</a></li></ul></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Zeitreihenanalyse</h1>
+<h1 class="title"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">3 Resampling &amp; Alignment</span></h1>
 </div>
 
 
 
 <div class="quarto-title-meta">
 
-    <div>
-    <div class="quarto-title-meta-heading">Autor:innen</div>
-    <div class="quarto-title-meta-contents">
-             <p>Lukas Arnold </p>
-             <p>Simone Arnold </p>
-             <p>Florian Bagemihl </p>
-             <p>Matthias Baitsch </p>
-             <p>Marc Fehr </p>
-             <p>Maik Poetzsch </p>
-             <p>Sebastian Seipel </p>
-          </div>
-  </div>
     
-    <div>
-    <div class="quarto-title-meta-heading">Veröffentlichungsdatum</div>
-    <div class="quarto-title-meta-contents">
-      <p class="date">27. Februar 2026</p>
-    </div>
-  </div>
   
     
   </div>
@@ -258,69 +266,211 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<section id="preamble" class="level1 unnumbered">
-<h1 class="unnumbered">Preamble</h1>
-<div id="Lizenz" class="border">
-<div class="quarto-layout-panel" data-layout="[20, 80]">
-<div class="quarto-layout-row quarto-layout-valign-center">
-<div class="quarto-layout-cell" style="flex-basis: 20.0%;justify-content: center;">
-<p><img src="https://mirrors.creativecommons.org/presskit/buttons/88x31/png/by.png" class="img-fluid" alt="Symbol des Lizenzhinweises Creative Commons BY"></p>
-</div>
-<div class="quarto-layout-cell" style="flex-basis: 80.0%;justify-content: flex-start;">
-<p>Bausteine Computergestützter Datenanalyse. “Zeitreihenanalyse” von Lukas Arnold, Simone Arnold, Florian Bagemihl, Matthias Baitsch, Marc Fehr, Maik Poetzsch und Sebastian Seipel ist lizensiert unter <a href="https://creativecommons.org/licenses/by/4.0/deed.de">CC BY 4.0</a>. Das Werk ist abrufbar unter <a href="https://github.com/bausteine-der-datenanalyse/a-zeitreihenanalyse" class="uri">https://github.com/bausteine-der-datenanalyse/a-zeitreihenanalyse</a>. Ausgenommen von der Lizenz sind alle Logos und anders gekennzeichneten Inhalte. 2024</p>
-</div>
-</div>
-</div>
-<p>Zitiervorschlag</p>
-<p>Arnold, Lukas, Simone Arnold, Matthias Baitsch, Marc Fehr, Maik Poetzsch, und Sebastian Seipel. 2024. „Bausteine Computergestützter Datenanalyse. Methodenbaustein Numerik“. <a href="https://github.com/bausteine-der-datenanalyse/a-zeitreihenanalyse" class="uri">https://github.com/bausteine-der-datenanalyse/a-zeitreihenanalyse</a>.</p>
-<p>BibTeX-Vorlage</p>
-<pre><code>@misc{BCD-Styleguide-2024,
- title={Bausteine Computergestützter Datenanalyse. Methodenbaustein Numerik},
- author={Arnold, Lukas and Arnold, Simone and Baitsch, Matthias and Fehr, Marc and Poetzsch, Maik and Seipel, Sebastian},
- year={2024},
- url={https://github.com/bausteine-der-datenanalyse/a-zeitreihenanalyse}} </code></pre>
-</div>
-</section>
-<section id="intro" class="level1">
-<h1>Intro</h1>
-<section id="voraussetzungen" class="level2">
-<h2 class="anchored" data-anchor-id="voraussetzungen">Voraussetzungen</h2>
+<section id="resampling-alignment" class="level1" data-number="4">
+<h1 data-number="4"><span class="header-section-number">4</span> 3 Resampling &amp; Alignment</h1>
+<p>Zeitreihen liegen häufig in unterschiedlichen Abtastraten vor oder müssen auf eine andere Zeitskala transformiert werden.</p>
+<p>Typische Gründe:</p>
 <ul>
-<li>Python-Grundlagen</li>
-<li>NumPy (Arrays, grundlegende Operationen)</li>
-<li>Matplotlib (Visualisierung)</li>
-<li>Grundverständnis von Pandas (Series, DataFrame)</li>
+<li>Vergleich zweier Zeitreihen</li>
+<li>Reduktion von Rauschen durch Aggregation</li>
+<li>Anpassung an Reporting-Intervalle</li>
+<li>Vorbereitung für Modellierung</li>
 </ul>
+<hr>
+<div class="callout callout-style-default callout-note callout-titled" title="Merke">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Merke
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Resampling bedeutet: Änderung der Zeitskala. Dabei muss entschieden werden zwischen Aggregation und Interpolation.</p>
+</div>
+</div>
+<hr>
+<section id="ausgangszeitreihe-stündlich" class="level2" data-number="4.1">
+<h2 data-number="4.1" class="anchored" data-anchor-id="ausgangszeitreihe-stündlich"><span class="header-section-number">4.1</span> 3.1 Ausgangszeitreihe (stündlich)</h2>
+<div id="7500a067" class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>rng <span class="op">=</span> np.random.default_rng(<span class="dv">2</span>)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>t <span class="op">=</span> pd.date_range(<span class="st">"2025-01-01"</span>, periods<span class="op">=</span><span class="dv">24</span><span class="op">*</span><span class="dv">5</span>, freq<span class="op">=</span><span class="st">"H"</span>)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> pd.Series(<span class="dv">10</span> <span class="op">+</span> rng.normal(size<span class="op">=</span><span class="bu">len</span>(t)), index<span class="op">=</span>t, name<span class="op">=</span><span class="st">"signal"</span>)</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>y.plot(title<span class="op">=</span><span class="st">"Stündliche Zeitreihe"</span>)</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>/var/folders/p_/ks3trxjx0jd839_g4g0vm4nc0000gn/T/ipykernel_19306/2493709333.py:7: FutureWarning: 'H' is deprecated and will be removed in a future version, please use 'h' instead.
+  t = pd.date_range("2025-01-01", periods=24*5, freq="H")</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="03-resampling-alignment_files/figure-html/cell-2-output-2.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<hr>
 </section>
-<section id="verwendete-pakete-und-datensätze" class="level2">
-<h2 class="anchored" data-anchor-id="verwendete-pakete-und-datensätze">Verwendete Pakete und Datensätze</h2>
-<section id="pakete" class="level3">
-<h3 class="anchored" data-anchor-id="pakete">Pakete</h3>
+<section id="downsampling-aggregation" class="level2" data-number="4.2">
+<h2 data-number="4.2" class="anchored" data-anchor-id="downsampling-aggregation"><span class="header-section-number">4.2</span> 3.2 Downsampling (Aggregation)</h2>
+<p>Wir aggregieren von Stunden auf Tage.</p>
+<div id="4286e896" class="cell" data-execution_count="2">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>daily_mean <span class="op">=</span> y.resample(<span class="st">"D"</span>).mean()</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>daily_max <span class="op">=</span> y.resample(<span class="st">"D"</span>).<span class="bu">max</span>()</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>ax <span class="op">=</span> daily_mean.plot(marker<span class="op">=</span><span class="st">"o"</span>, label<span class="op">=</span><span class="st">"Tagesmittel"</span>)</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>daily_max.plot(ax<span class="op">=</span>ax, marker<span class="op">=</span><span class="st">"o"</span>, label<span class="op">=</span><span class="st">"Tagesmaximum"</span>)</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>plt.legend()</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Downsampling: Stunden → Tage"</span>)</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="03-resampling-alignment_files/figure-html/cell-3-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<hr>
+<div class="callout callout-style-default callout-tip callout-titled" title="Entscheidungshilfe">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Entscheidungshilfe
+</div>
+</div>
+<div class="callout-body-container callout-body">
 <ul>
-<li><a href="https://numpy.org/">NumPy</a></li>
-<li><a href="https://matplotlib.org/">Matplotlib</a></li>
-<li><a href="https://pandas.pydata.org/">Pandas</a></li>
+<li>Mittelwert → glättet Schwankungen<br>
+</li>
+<li>Maximum → zeigt Extremwerte<br>
+</li>
+<li>Summe → sinnvoll bei Mengen (z. B. Energieverbrauch)</li>
 </ul>
+</div>
+</div>
+<hr>
 </section>
-<section id="datensätze" class="level3">
-<h3 class="anchored" data-anchor-id="datensätze">Datensätze</h3>
+<section id="upsampling-interpolation" class="level2" data-number="4.3">
+<h2 data-number="4.3" class="anchored" data-anchor-id="upsampling-interpolation"><span class="header-section-number">4.3</span> 3.3 Upsampling (Interpolation)</h2>
+<p>Wir erhöhen die zeitliche Auflösung.</p>
+<div id="854927a4" class="cell" data-execution_count="3">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>y_2h <span class="op">=</span> y.resample(<span class="st">"2H"</span>).mean()</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>y_up <span class="op">=</span> y_2h.resample(<span class="st">"H"</span>).interpolate(<span class="st">"time"</span>)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>ax <span class="op">=</span> y_2h.plot(marker<span class="op">=</span><span class="st">"o"</span>, label<span class="op">=</span><span class="st">"2H (aggregiert)"</span>)</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>y_up.plot(ax<span class="op">=</span>ax, alpha<span class="op">=</span><span class="fl">0.7</span>, label<span class="op">=</span><span class="st">"Interpoliert auf 1H"</span>)</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>plt.legend()</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Upsampling mit Interpolation"</span>)</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>/var/folders/p_/ks3trxjx0jd839_g4g0vm4nc0000gn/T/ipykernel_19306/2179676712.py:1: FutureWarning: 'H' is deprecated and will be removed in a future version, please use 'h' instead.
+  y_2h = y.resample("2H").mean()
+/var/folders/p_/ks3trxjx0jd839_g4g0vm4nc0000gn/T/ipykernel_19306/2179676712.py:2: FutureWarning: 'H' is deprecated and will be removed in a future version, please use 'h' instead.
+  y_up = y_2h.resample("H").interpolate("time")</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="03-resampling-alignment_files/figure-html/cell-4-output-2.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<hr>
+<div class="callout callout-style-default callout-warning callout-titled" title="Achtung">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Achtung
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Interpolation erzeugt keine neuen Messinformationen, sondern modelliert einen plausiblen Verlauf.</p>
+</div>
+</div>
+<hr>
 </section>
+<section id="alignment-zweier-zeitreihen" class="level2" data-number="4.4">
+<h2 data-number="4.4" class="anchored" data-anchor-id="alignment-zweier-zeitreihen"><span class="header-section-number">4.4</span> 3.4 Alignment zweier Zeitreihen</h2>
+<p>Zwei Zeitreihen mit unterschiedlicher Abtastrate:</p>
+<div id="92b5f8e2" class="cell" data-execution_count="4">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>t2 <span class="op">=</span> pd.date_range(<span class="st">"2025-01-01"</span>, periods<span class="op">=</span><span class="dv">24</span><span class="op">*</span><span class="dv">5</span>, freq<span class="op">=</span><span class="st">"2H"</span>)</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>y2 <span class="op">=</span> pd.Series(<span class="dv">5</span> <span class="op">+</span> rng.normal(size<span class="op">=</span><span class="bu">len</span>(t2)), index<span class="op">=</span>t2, name<span class="op">=</span><span class="st">"signal2"</span>)</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>/var/folders/p_/ks3trxjx0jd839_g4g0vm4nc0000gn/T/ipykernel_19306/3177252539.py:1: FutureWarning: 'H' is deprecated and will be removed in a future version, please use 'h' instead.
+  t2 = pd.date_range("2025-01-01", periods=24*5, freq="2H")</code></pre>
+</div>
+</div>
+<p>Zur gemeinsamen Analyse müssen beide Reihen dieselbe Frequenz haben.</p>
+<div id="a473dc9b" class="cell" data-execution_count="5">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>y2_aligned <span class="op">=</span> y2.resample(<span class="st">"H"</span>).interpolate(<span class="st">"time"</span>)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.concat([y, y2_aligned], axis<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>df.plot(title<span class="op">=</span><span class="st">"Aligned Time Series"</span>)</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>/var/folders/p_/ks3trxjx0jd839_g4g0vm4nc0000gn/T/ipykernel_19306/1233815767.py:1: FutureWarning: 'H' is deprecated and will be removed in a future version, please use 'h' instead.
+  y2_aligned = y2.resample("H").interpolate("time")</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="03-resampling-alignment_files/figure-html/cell-6-output-2.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<hr>
+<div class="callout callout-style-default callout-note callout-titled" title="Merke">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Merke
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Alignment bedeutet: - gleiche Frequenz - gleicher Zeitbereich - gleiche Zeitzone</p>
+</div>
+</div>
+<hr>
 </section>
-<section id="bearbeitungszeit" class="level2">
-<h2 class="anchored" data-anchor-id="bearbeitungszeit">Bearbeitungszeit</h2>
-<p>Geschätzte Bearbeitungszeit: 2h</p>
-</section>
-<section id="lernziele" class="level2">
-<h2 class="anchored" data-anchor-id="lernziele">Lernziele</h2>
+<section id="häufige-fehlerquellen" class="level2" data-number="4.5">
+<h2 data-number="4.5" class="anchored" data-anchor-id="häufige-fehlerquellen"><span class="header-section-number">4.5</span> 3.5 Häufige Fehlerquellen</h2>
 <ul>
-<li>Zeitreihen strukturiert vorverarbeiten (Zeitindex, Missing, Ausreißer)</li>
-<li>Resampling und Alignment methodisch korrekt einsetzen</li>
-<li>Glättung so wählen, dass sie zur Fragestellung passt</li>
-<li>Trend und Saisonanteile erkennen und interpretieren</li>
-<li>zeitliche Abhängigkeiten mit Lag/Autokorrelation diagnostizieren</li>
-<li>Anomalien mit einfachen, begründbaren Regeln detektieren</li>
-<li>Forecast-Baselines implementieren und mit Fehlermaßen bewerten</li>
+<li>Vergleiche ohne vorheriges Resampling</li>
+<li>Mischung von lokaler Zeit und UTC</li>
+<li>Aggregation ohne Berücksichtigung der Datentypen (z. B. Summe vs Mittelwert)</li>
 </ul>
+<hr>
+</section>
+<section id="mini-aufgabe" class="level2" data-number="4.6">
+<h2 data-number="4.6" class="anchored" data-anchor-id="mini-aufgabe"><span class="header-section-number">4.6</span> 3.6 Mini-Aufgabe</h2>
+<ol type="1">
+<li>Erzeugen Sie eine minütliche Zeitreihe über 2 Tage.</li>
+<li>Aggregieren Sie auf Stundenmittel.</li>
+<li>Vergleichen Sie visuell:
+<ul>
+<li>Original</li>
+<li>Stundenmittel</li>
+</ul></li>
+<li>Interpretieren Sie den Informationsverlust.</li>
+</ol>
 
 
 </section>
@@ -728,10 +878,13 @@ ul.task-list li input[type="checkbox"] {
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
+      <a href="../skript/02-vorverarbeitung-validierung.html" class="pagination-link" aria-label="2 Vorverarbeitung &amp; Validierung einer Zeitreihe">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">2 Vorverarbeitung &amp; Validierung einer Zeitreihe</span></span>
+      </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./skript/01-einleitung.html" class="pagination-link" aria-label="1 Einordnung: Zeitreihen als Messprozess">
-        <span class="nav-page-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">1 Einordnung: Zeitreihen als Messprozess</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../skript/04-glaettung.html" class="pagination-link" aria-label="4 Glättung &amp; Rauschreduktion">
+        <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">4 Glättung &amp; Rauschreduktion</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
@@ -740,4 +893,4 @@ ul.task-list li input[type="checkbox"] {
 
 
 
-<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/bausteine-der-datenanalyse/a-analyse-von-zeitdaten/blob/main/index.qmd" class="toc-action"><i class="bi bi-github"></i>Quellcode anzeigen</a></li></ul></div></div></div></footer></body></html>
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/bausteine-der-datenanalyse/a-analyse-von-zeitdaten/blob/main/skript/03-resampling-alignment.qmd" class="toc-action"><i class="bi bi-github"></i>Quellcode anzeigen</a></li></ul></div></div></div></footer></body></html>

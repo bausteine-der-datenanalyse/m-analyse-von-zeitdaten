@@ -14,11 +14,11 @@ book:
   date: today
   language: de-DE
   downloads: [pdf]
-  repo-url: "https://github.com/bausteine-der-datenanalyse/m-numerik"
+  repo-url: "https://github.com/bausteine-der-datenanalyse/a-analyse-von-zeitdaten"
   repo-actions: [source]
   favicon: "skript/00-bilder/favicon_bcd_new.svg"
   sidebar:
-    title: "Methodenbaustein Numerik"
+    title: "Zeitreihenanalyse"
     logo: "skript/00-bilder/logo_bcd_new.svg"
 
 bibliography: skript/references.bib

@@ -6,15 +6,8 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="author" content="Lukas Arnold">
-<meta name="author" content="Simone Arnold">
-<meta name="author" content="Florian Bagemihl">
-<meta name="author" content="Matthias Baitsch">
-<meta name="author" content="Marc Fehr">
-<meta name="author" content="Maik Poetzsch">
-<meta name="author" content="Sebastian Seipel">
 
-<title>Zeitreihenanalyse</title>
+<title>1&nbsp; 1 Einordnung: Zeitreihen als Messprozess – Zeitreihenanalyse</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -27,28 +20,64 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
-<script src="site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="site_libs/quarto-nav/headroom.min.js"></script>
-<script src="site_libs/clipboard/clipboard.min.js"></script>
-<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
-<script src="site_libs/quarto-search/fuse.min.js"></script>
-<script src="site_libs/quarto-search/quarto-search.js"></script>
-<meta name="quarto:offset" content="./">
-<link href="./skript/01-einleitung.html" rel="next">
-<link href="./skript/00-bilder/favicon_bcd_new.svg" rel="icon" type="image/svg+xml">
-<script src="site_libs/quarto-html/quarto.js" type="module"></script>
-<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="site_libs/quarto-html/popper.min.js"></script>
-<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="site_libs/quarto-html/anchor.min.js"></script>
-<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-37eea08aefeeee20ff55810ff984fec1.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-43eee54d0d73e4db03bc2295c2af38c5.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../skript/02-vorverarbeitung-validierung.html" rel="next">
+<link href="../index.html" rel="prev">
+<link href="../skript/00-bilder/favicon_bcd_new.svg" rel="icon" type="image/svg+xml">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-37eea08aefeeee20ff55810ff984fec1.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-43eee54d0d73e4db03bc2295c2af38c5.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -89,7 +118,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Seitenleiste umschalten" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./index.html">Preamble</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../skript/01-einleitung.html"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">1 Einordnung: Zeitreihen als Messprozess</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Seitenleiste umschalten" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Suchen" onclick="window.quartoOpenSearch();">
@@ -103,14 +132,14 @@ ul.task-list li input[type="checkbox"] {
 <!-- sidebar -->
   <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
     <div class="pt-lg-2 mt-2 text-left sidebar-header sidebar-header-stacked">
-      <a href="./index.html" class="sidebar-logo-link">
-      <img src="./skript/00-bilder/logo_bcd_new.svg" alt="" class="sidebar-logo py-0 d-lg-inline d-none">
+      <a href="../index.html" class="sidebar-logo-link">
+      <img src="../skript/00-bilder/logo_bcd_new.svg" alt="" class="sidebar-logo py-0 d-lg-inline d-none">
       </a>
     <div class="sidebar-title mb-0 py-0">
-      <a href="./">Zeitreihenanalyse</a> 
+      <a href="../">Zeitreihenanalyse</a> 
         <div class="sidebar-tools-main">
     <a href="https://github.com/bausteine-der-datenanalyse/a-analyse-von-zeitdaten" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
-    <a href="./Zeitreihenanalyse.pdf" title="Download PDF" class="quarto-navigation-tool px-1" aria-label="Download PDF"><i class="bi bi-file-pdf"></i></a>
+    <a href="../Zeitreihenanalyse.pdf" title="Download PDF" class="quarto-navigation-tool px-1" aria-label="Download PDF"><i class="bi bi-file-pdf"></i></a>
 </div>
     </div>
       </div>
@@ -123,73 +152,73 @@ ul.task-list li input[type="checkbox"] {
     <ul class="list-unstyled mt-1">
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./index.html" class="sidebar-item-text sidebar-link active">
+  <a href="../index.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Preamble</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./skript/01-einleitung.html" class="sidebar-item-text sidebar-link">
+  <a href="../skript/01-einleitung.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">1 Einordnung: Zeitreihen als Messprozess</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./skript/02-vorverarbeitung-validierung.html" class="sidebar-item-text sidebar-link">
+  <a href="../skript/02-vorverarbeitung-validierung.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">2 Vorverarbeitung &amp; Validierung einer Zeitreihe</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./skript/03-resampling-alignment.html" class="sidebar-item-text sidebar-link">
+  <a href="../skript/03-resampling-alignment.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">3 Resampling &amp; Alignment</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./skript/04-glaettung.html" class="sidebar-item-text sidebar-link">
+  <a href="../skript/04-glaettung.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">4 Glättung &amp; Rauschreduktion</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./skript/05-trend-saison.html" class="sidebar-item-text sidebar-link">
+  <a href="../skript/05-trend-saison.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">5 Trend &amp; Saison</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./skript/06-lags-autokorrelation.html" class="sidebar-item-text sidebar-link">
+  <a href="../skript/06-lags-autokorrelation.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">6 Lags &amp; Autokorrelation</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./skript/07-anomalien.html" class="sidebar-item-text sidebar-link">
+  <a href="../skript/07-anomalien.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">7 Anomalien</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./skript/08-forecasting-baselines.html" class="sidebar-item-text sidebar-link">
+  <a href="../skript/08-forecasting-baselines.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">8 Forecasting-Baselines &amp; Bewertung</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./skript/09-lernzielkontrolle.html" class="sidebar-item-text sidebar-link">
+  <a href="../skript/09-lernzielkontrolle.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">9 Lernzielkontrolle</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./skript/10-uebung.html" class="sidebar-item-text sidebar-link">
+  <a href="../skript/10-uebung.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">10 Übung: Zeitreihen-Workflow</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./skript/11-klausurfragen.html" class="sidebar-item-text sidebar-link">
+  <a href="../skript/11-klausurfragen.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">11 Klausurfragen</span></span></a>
   </div>
 </li>
@@ -203,52 +232,29 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">Inhaltsverzeichnis</h2>
    
   <ul>
-  <li><a href="#preamble" id="toc-preamble" class="nav-link active" data-scroll-target="#preamble">Preamble</a></li>
-  <li><a href="#intro" id="toc-intro" class="nav-link" data-scroll-target="#intro">Intro</a>
+  <li><a href="#einordnung-zeitreihen-als-messprozess" id="toc-einordnung-zeitreihen-als-messprozess" class="nav-link active" data-scroll-target="#einordnung-zeitreihen-als-messprozess"><span class="header-section-number">2</span> 1 Einordnung: Zeitreihen als Messprozess</a>
   <ul class="collapse">
-  <li><a href="#voraussetzungen" id="toc-voraussetzungen" class="nav-link" data-scroll-target="#voraussetzungen">Voraussetzungen</a></li>
-  <li><a href="#verwendete-pakete-und-datensätze" id="toc-verwendete-pakete-und-datensätze" class="nav-link" data-scroll-target="#verwendete-pakete-und-datensätze">Verwendete Pakete und Datensätze</a>
-  <ul class="collapse">
-  <li><a href="#pakete" id="toc-pakete" class="nav-link" data-scroll-target="#pakete">Pakete</a></li>
-  <li><a href="#datensätze" id="toc-datensätze" class="nav-link" data-scroll-target="#datensätze">Datensätze</a></li>
-  </ul></li>
-  <li><a href="#bearbeitungszeit" id="toc-bearbeitungszeit" class="nav-link" data-scroll-target="#bearbeitungszeit">Bearbeitungszeit</a></li>
-  <li><a href="#lernziele" id="toc-lernziele" class="nav-link" data-scroll-target="#lernziele">Lernziele</a></li>
+  <li><a href="#arbeitsdatensatz-erzeugen" id="toc-arbeitsdatensatz-erzeugen" class="nav-link" data-scroll-target="#arbeitsdatensatz-erzeugen"><span class="header-section-number">2.1</span> 1.1 Arbeitsdatensatz erzeugen</a></li>
+  <li><a href="#typische-analysefragen" id="toc-typische-analysefragen" class="nav-link" data-scroll-target="#typische-analysefragen"><span class="header-section-number">2.2</span> 1.2 Typische Analysefragen</a></li>
+  <li><a href="#strukturmodell-einer-zeitreihe" id="toc-strukturmodell-einer-zeitreihe" class="nav-link" data-scroll-target="#strukturmodell-einer-zeitreihe"><span class="header-section-number">2.3</span> 1.3 Strukturmodell einer Zeitreihe</a></li>
+  <li><a href="#mini-reflexion" id="toc-mini-reflexion" class="nav-link" data-scroll-target="#mini-reflexion"><span class="header-section-number">2.4</span> 1.4 Mini-Reflexion</a></li>
   </ul></li>
   </ul>
-<div class="toc-actions"><ul><li><a href="https://github.com/bausteine-der-datenanalyse/a-analyse-von-zeitdaten/blob/main/index.qmd" class="toc-action"><i class="bi bi-github"></i>Quellcode anzeigen</a></li></ul></div></nav>
+<div class="toc-actions"><ul><li><a href="https://github.com/bausteine-der-datenanalyse/a-analyse-von-zeitdaten/blob/main/skript/01-einleitung.qmd" class="toc-action"><i class="bi bi-github"></i>Quellcode anzeigen</a></li></ul></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Zeitreihenanalyse</h1>
+<h1 class="title"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">1 Einordnung: Zeitreihen als Messprozess</span></h1>
 </div>
 
 
 
 <div class="quarto-title-meta">
 
-    <div>
-    <div class="quarto-title-meta-heading">Autor:innen</div>
-    <div class="quarto-title-meta-contents">
-             <p>Lukas Arnold </p>
-             <p>Simone Arnold </p>
-             <p>Florian Bagemihl </p>
-             <p>Matthias Baitsch </p>
-             <p>Marc Fehr </p>
-             <p>Maik Poetzsch </p>
-             <p>Sebastian Seipel </p>
-          </div>
-  </div>
     
-    <div>
-    <div class="quarto-title-meta-heading">Veröffentlichungsdatum</div>
-    <div class="quarto-title-meta-contents">
-      <p class="date">27. Februar 2026</p>
-    </div>
-  </div>
   
     
   </div>
@@ -258,69 +264,195 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<section id="preamble" class="level1 unnumbered">
-<h1 class="unnumbered">Preamble</h1>
-<div id="Lizenz" class="border">
-<div class="quarto-layout-panel" data-layout="[20, 80]">
-<div class="quarto-layout-row quarto-layout-valign-center">
-<div class="quarto-layout-cell" style="flex-basis: 20.0%;justify-content: center;">
-<p><img src="https://mirrors.creativecommons.org/presskit/buttons/88x31/png/by.png" class="img-fluid" alt="Symbol des Lizenzhinweises Creative Commons BY"></p>
-</div>
-<div class="quarto-layout-cell" style="flex-basis: 80.0%;justify-content: flex-start;">
-<p>Bausteine Computergestützter Datenanalyse. “Zeitreihenanalyse” von Lukas Arnold, Simone Arnold, Florian Bagemihl, Matthias Baitsch, Marc Fehr, Maik Poetzsch und Sebastian Seipel ist lizensiert unter <a href="https://creativecommons.org/licenses/by/4.0/deed.de">CC BY 4.0</a>. Das Werk ist abrufbar unter <a href="https://github.com/bausteine-der-datenanalyse/a-zeitreihenanalyse" class="uri">https://github.com/bausteine-der-datenanalyse/a-zeitreihenanalyse</a>. Ausgenommen von der Lizenz sind alle Logos und anders gekennzeichneten Inhalte. 2024</p>
-</div>
-</div>
-</div>
-<p>Zitiervorschlag</p>
-<p>Arnold, Lukas, Simone Arnold, Matthias Baitsch, Marc Fehr, Maik Poetzsch, und Sebastian Seipel. 2024. „Bausteine Computergestützter Datenanalyse. Methodenbaustein Numerik“. <a href="https://github.com/bausteine-der-datenanalyse/a-zeitreihenanalyse" class="uri">https://github.com/bausteine-der-datenanalyse/a-zeitreihenanalyse</a>.</p>
-<p>BibTeX-Vorlage</p>
-<pre><code>@misc{BCD-Styleguide-2024,
- title={Bausteine Computergestützter Datenanalyse. Methodenbaustein Numerik},
- author={Arnold, Lukas and Arnold, Simone and Baitsch, Matthias and Fehr, Marc and Poetzsch, Maik and Seipel, Sebastian},
- year={2024},
- url={https://github.com/bausteine-der-datenanalyse/a-zeitreihenanalyse}} </code></pre>
-</div>
-</section>
-<section id="intro" class="level1">
-<h1>Intro</h1>
-<section id="voraussetzungen" class="level2">
-<h2 class="anchored" data-anchor-id="voraussetzungen">Voraussetzungen</h2>
+<section id="einordnung-zeitreihen-als-messprozess" class="level1" data-number="2">
+<h1 data-number="2"><span class="header-section-number">2</span> 1 Einordnung: Zeitreihen als Messprozess</h1>
+<p>Eine Zeitreihe ist das Ergebnis eines <strong>Messprozesses über die Zeit</strong>.</p>
+<p>Typische Beispiele:</p>
 <ul>
-<li>Python-Grundlagen</li>
-<li>NumPy (Arrays, grundlegende Operationen)</li>
-<li>Matplotlib (Visualisierung)</li>
-<li>Grundverständnis von Pandas (Series, DataFrame)</li>
+<li>Sensordaten</li>
+<li>Energieverbrauch</li>
+<li>Web-Traffic</li>
+<li>Finanzdaten</li>
+<li>Maschinendaten in Produktionsprozessen</li>
 </ul>
-</section>
-<section id="verwendete-pakete-und-datensätze" class="level2">
-<h2 class="anchored" data-anchor-id="verwendete-pakete-und-datensätze">Verwendete Pakete und Datensätze</h2>
-<section id="pakete" class="level3">
-<h3 class="anchored" data-anchor-id="pakete">Pakete</h3>
+<p>Wichtig ist nicht nur der Zahlenwert selbst, sondern:</p>
 <ul>
-<li><a href="https://numpy.org/">NumPy</a></li>
-<li><a href="https://matplotlib.org/">Matplotlib</a></li>
-<li><a href="https://pandas.pydata.org/">Pandas</a></li>
+<li><strong>Abtastrate</strong> (stündlich, minütlich, unregelmäßig?)</li>
+<li><strong>Messqualität</strong></li>
+<li><strong>Strukturelle Muster</strong> (Trend, Periodik)</li>
+<li><strong>Störungen</strong> (Rauschen, Ausreißer)</li>
 </ul>
-</section>
-<section id="datensätze" class="level3">
-<h3 class="anchored" data-anchor-id="datensätze">Datensätze</h3>
-</section>
-</section>
-<section id="bearbeitungszeit" class="level2">
-<h2 class="anchored" data-anchor-id="bearbeitungszeit">Bearbeitungszeit</h2>
-<p>Geschätzte Bearbeitungszeit: 2h</p>
-</section>
-<section id="lernziele" class="level2">
-<h2 class="anchored" data-anchor-id="lernziele">Lernziele</h2>
+<div class="callout callout-style-default callout-note callout-titled" title="Merke">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Merke
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Zeitreihenanalyse beginnt nicht mit einem Modell, sondern mit dem Verständnis des Messprozesses.</p>
+</div>
+</div>
+<section id="arbeitsdatensatz-erzeugen" class="level2" data-number="2.1">
+<h2 data-number="2.1" class="anchored" data-anchor-id="arbeitsdatensatz-erzeugen"><span class="header-section-number">2.1</span> 1.1 Arbeitsdatensatz erzeugen</h2>
+<p>Wir erstellen eine synthetische Zeitreihe mit:</p>
 <ul>
-<li>Zeitreihen strukturiert vorverarbeiten (Zeitindex, Missing, Ausreißer)</li>
-<li>Resampling und Alignment methodisch korrekt einsetzen</li>
-<li>Glättung so wählen, dass sie zur Fragestellung passt</li>
-<li>Trend und Saisonanteile erkennen und interpretieren</li>
-<li>zeitliche Abhängigkeiten mit Lag/Autokorrelation diagnostizieren</li>
-<li>Anomalien mit einfachen, begründbaren Regeln detektieren</li>
-<li>Forecast-Baselines implementieren und mit Fehlermaßen bewerten</li>
+<li>Trend<br>
+</li>
+<li>Tagesperiodik<br>
+</li>
+<li>Rauschen<br>
+</li>
+<li>Ausreißern</li>
 </ul>
+<p>Diese Struktur ist typisch für reale technische Messdaten.</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true">Pandas (empfohlen)</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false">NumPy (Prinzip)</a></li></ul>
+<div class="tab-content">
+<div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
+<div id="71a3ac6c" class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>rng <span class="op">=</span> np.random.default_rng(<span class="dv">42</span>)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Zeitindex: 14 Tage, stündliche Messung</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>t <span class="op">=</span> pd.date_range(<span class="st">"2025-01-01"</span>, periods<span class="op">=</span><span class="dv">24</span><span class="op">*</span><span class="dv">14</span>, freq<span class="op">=</span><span class="st">"H"</span>)</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>trend <span class="op">=</span> np.linspace(<span class="dv">0</span>, <span class="dv">3</span>, <span class="bu">len</span>(t))</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>season <span class="op">=</span> <span class="fl">0.8</span> <span class="op">*</span> np.sin(<span class="dv">2</span><span class="op">*</span>np.pi<span class="op">*</span>(t.hour)<span class="op">/</span><span class="dv">24</span>)</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>noise <span class="op">=</span> <span class="fl">0.25</span> <span class="op">*</span> rng.normal(size<span class="op">=</span><span class="bu">len</span>(t))</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> <span class="dv">10</span> <span class="op">+</span> trend <span class="op">+</span> season <span class="op">+</span> noise</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> pd.Series(y, index<span class="op">=</span>t, name<span class="op">=</span><span class="st">"signal"</span>)</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="co"># künstliche Ausreißer</span></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>y.iloc[<span class="dv">50</span>] <span class="op">+=</span> <span class="fl">3.5</span></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>y.iloc[<span class="dv">120</span>] <span class="op">-=</span> <span class="fl">2.8</span></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>y.plot()</span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Zeitreihe (Trend + Saison + Rauschen)"</span>)</span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"Zeit"</span>)</span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"Wert"</span>)</span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>/var/folders/p_/ks3trxjx0jd839_g4g0vm4nc0000gn/T/ipykernel_19014/3138279399.py:8: FutureWarning: 'H' is deprecated and will be removed in a future version, please use 'h' instead.
+  t = pd.date_range("2025-01-01", periods=24*14, freq="H")</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="01-einleitung_files/figure-html/cell-2-output-2.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
+<p>Hier modellieren wir Zeit als einfachen Sample-Index.</p>
+<div id="cad641f5" class="cell" data-execution_count="2">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>rng <span class="op">=</span> np.random.default_rng(<span class="dv">42</span>)</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>n <span class="op">=</span> <span class="dv">24</span><span class="op">*</span><span class="dv">14</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> np.arange(n)</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>trend <span class="op">=</span> np.linspace(<span class="dv">0</span>, <span class="dv">3</span>, n)</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>season <span class="op">=</span> <span class="fl">0.8</span> <span class="op">*</span> np.sin(<span class="dv">2</span><span class="op">*</span>np.pi<span class="op">*</span>(x <span class="op">%</span> <span class="dv">24</span>)<span class="op">/</span><span class="dv">24</span>)</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>noise <span class="op">=</span> <span class="fl">0.25</span> <span class="op">*</span> rng.normal(size<span class="op">=</span>n)</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> <span class="dv">10</span> <span class="op">+</span> trend <span class="op">+</span> season <span class="op">+</span> noise</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Ausreißer</span></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>y[<span class="dv">50</span>] <span class="op">+=</span> <span class="fl">3.5</span></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>y[<span class="dv">120</span>] <span class="op">-=</span> <span class="fl">2.8</span></span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>plt.plot(y)</span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Zeitreihe (NumPy, ohne Zeitindex)"</span>)</span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"Sample"</span>)</span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"Wert"</span>)</span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="01-einleitung_files/figure-html/cell-3-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="typische-analysefragen" class="level2" data-number="2.2">
+<h2 data-number="2.2" class="anchored" data-anchor-id="typische-analysefragen"><span class="header-section-number">2.2</span> 1.2 Typische Analysefragen</h2>
+<p>Bei Zeitreihen treten immer wieder ähnliche Fragestellungen auf:</p>
+<ul>
+<li>Gibt es einen <strong>Trend</strong>?</li>
+<li>Existiert eine <strong>Periodik</strong> (z. B. Tages- oder Wochenmuster)?</li>
+<li>Wie stark ist das <strong>Rauschen</strong>?</li>
+<li>Gibt es <strong>Anomalien</strong>?</li>
+<li>Wie kann ich zukünftige Werte grob abschätzen?</li>
+</ul>
+<div class="callout callout-style-default callout-tip callout-titled" title="Methodischer Blick">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Methodischer Blick
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Bevor Sie glätten oder modellieren:</p>
+<ol type="1">
+<li>Visualisieren<br>
+</li>
+<li>Zeitskala prüfen<br>
+</li>
+<li>Struktur erkennen<br>
+</li>
+<li>Erst dann weiter analysieren<br>
+</li>
+</ol>
+</div>
+</div>
+</section>
+<section id="strukturmodell-einer-zeitreihe" class="level2" data-number="2.3">
+<h2 data-number="2.3" class="anchored" data-anchor-id="strukturmodell-einer-zeitreihe"><span class="header-section-number">2.3</span> 1.3 Strukturmodell einer Zeitreihe</h2>
+<p>Eine Zeitreihe lässt sich häufig konzeptionell darstellen als:</p>
+<p>Signal = Trend + Saison + Rauschen + Ausreißer</p>
+<p>Diese Zerlegung ist kein physikalisches Gesetz, sondern ein <strong>Denkmodell</strong>, das hilft, Muster systematisch zu analysieren.</p>
+<div class="callout callout-style-default callout-warning callout-titled" title="Achtung">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Achtung
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Nicht jedes wiederkehrende Muster ist automatisch „Saison”.<br>
+Regelmäßigkeit muss zur Abtastrate und zum Prozess plausibel passen.</p>
+</div>
+</div>
+</section>
+<section id="mini-reflexion" class="level2" data-number="2.4">
+<h2 data-number="2.4" class="anchored" data-anchor-id="mini-reflexion"><span class="header-section-number">2.4</span> 1.4 Mini-Reflexion</h2>
+<p>Beantworten Sie:</p>
+<ol type="1">
+<li>Welche Periodik wurde hier modelliert?</li>
+<li>Welche Rolle spielt die Abtastrate?</li>
+<li>Würde eine tägliche Aggregation den Saisonanteil sichtbar oder unsichtbar machen?</li>
+<li>Wie würden sich Ausreißer bei starker Glättung verhalten?</li>
+</ol>
+<p>Diese Fragen begleiten uns durch den gesamten Methodenbaustein.</p>
 
 
 </section>
@@ -728,10 +860,13 @@ ul.task-list li input[type="checkbox"] {
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
+      <a href="../index.html" class="pagination-link" aria-label="Preamble">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Preamble</span>
+      </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./skript/01-einleitung.html" class="pagination-link" aria-label="1 Einordnung: Zeitreihen als Messprozess">
-        <span class="nav-page-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">1 Einordnung: Zeitreihen als Messprozess</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../skript/02-vorverarbeitung-validierung.html" class="pagination-link" aria-label="2 Vorverarbeitung &amp; Validierung einer Zeitreihe">
+        <span class="nav-page-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">2 Vorverarbeitung &amp; Validierung einer Zeitreihe</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
@@ -740,4 +875,4 @@ ul.task-list li input[type="checkbox"] {
 
 
 
-<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/bausteine-der-datenanalyse/a-analyse-von-zeitdaten/blob/main/index.qmd" class="toc-action"><i class="bi bi-github"></i>Quellcode anzeigen</a></li></ul></div></div></div></footer></body></html>
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/bausteine-der-datenanalyse/a-analyse-von-zeitdaten/blob/main/skript/01-einleitung.qmd" class="toc-action"><i class="bi bi-github"></i>Quellcode anzeigen</a></li></ul></div></div></div></footer></body></html>
