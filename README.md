@@ -1,3 +1,4 @@
-Link zum vollen Dokument: [Link](https://bausteine-der-datenanalyse.github.io/w-python-numpy-grundlagen/output/book/)
+Link zum vollen Dokument: [Link](https://bausteine-der-datenanalyse.github.io/m-analyse-von-zeitdaten/output/book/)
 
-Link zu den Klausurfragen: [Link](https://bausteine-der-datenanalyse.github.io/w-python-numpy-grundlagen/output/klausur/)
+Link zu den Klausurfragen: [Link](https://bausteine-der-datenanalyse.github.io/m-analyse-von-zeitdaten/output/klausur/)
+
