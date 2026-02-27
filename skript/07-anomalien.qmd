@@ -1,0 +1,176 @@
+---
+title: "7 Anomalien"
+---
+
+# 7 Anomalien
+
+Anomalien sind Beobachtungen, die deutlich vom erwarteten Verhalten abweichen.
+
+In Zeitreihen bedeutet das:
+
+- starke Abweichung vom Trend
+- starke Abweichung von saisonalem Muster
+- plötzliche Strukturbrüche
+
+Wichtig ist: Anomalien sind **kontextabhängig**.
+
+---
+
+::: {.callout-note title="Merke"}
+Eine Anomalie ist keine rein statistische Eigenschaft.
+Sie ist eine Abweichung vom erwarteten Prozessverhalten.
+:::
+
+---
+
+## 7.1 Beispielsignal mit Ausreißern
+
+```{python}
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+
+rng = np.random.default_rng(99)
+
+t = pd.date_range("2025-01-01", periods=24*10, freq="H")
+trend = np.linspace(0, 2, len(t))
+season = 0.8 * np.sin(2*np.pi*(t.hour)/24)
+noise = 0.3 * rng.normal(size=len(t))
+
+s = pd.Series(10 + trend + season + noise, index=t, name="signal")
+
+# künstliche Anomalien
+s.iloc[40] += 4
+s.iloc[120] -= 3
+
+s.plot(title="Signal mit Anomalien")
+plt.show()
+```
+
+---
+
+## 7.2 Globale Z-Score Methode
+
+Wir standardisieren die gesamte Zeitreihe.
+
+::: {.panel-tabset}
+
+## Pandas
+
+```{python}
+z = (s - s.mean()) / s.std()
+anomalies = s[abs(z) > 3]
+
+ax = s.plot(label="Signal")
+anomalies.plot(ax=ax, linestyle="None", marker="o", label="Anomalie")
+plt.legend()
+plt.title("Anomalien (Z-Score)")
+plt.show()
+```
+
+## NumPy
+
+```{python}
+y = s.to_numpy()
+
+z_np = (y - np.mean(y)) / np.std(y)
+anomalies_idx = np.where(np.abs(z_np) > 3)[0]
+
+plt.plot(y, label="Signal")
+plt.scatter(anomalies_idx, y[anomalies_idx], label="Anomalie")
+plt.legend()
+plt.title("Anomalien (NumPy Z-Score)")
+plt.show()
+```
+
+:::
+
+---
+
+::: {.callout-warning title="Achtung"}
+Z-Score funktioniert schlecht bei starkem Trend oder Saison,
+weil globale Mittelwerte verzerren.
+:::
+
+---
+
+## 7.3 Lokale Anomalie (Baseline + Residuum)
+
+Statt globaler Standardisierung definieren wir eine lokale Baseline.
+
+```{python}
+baseline = s.ewm(span=24, adjust=False).mean()
+residual = s - baseline
+
+score = (residual - residual.mean()) / residual.std()
+anomalies_local = s[abs(score) > 3]
+
+ax = s.plot(alpha=0.6, label="Signal")
+baseline.plot(ax=ax, label="Baseline")
+anomalies_local.plot(ax=ax, linestyle="None", marker="o", label="Anomalie")
+plt.legend()
+plt.title("Lokale Anomalien (EWMA-Baseline)")
+plt.show()
+```
+
+---
+
+::: {.callout-tip title="Interpretation"}
+Lokale Verfahren sind robuster,
+wenn Trend oder Saison vorhanden sind.
+:::
+
+---
+
+## 7.4 Rolling-Standardabweichung
+
+Anomalien können auch als starke Abweichung
+relativ zur lokalen Varianz definiert werden.
+
+```{python}
+rolling_std = s.rolling("24H").std()
+rolling_mean = s.rolling("24H").mean()
+
+upper = rolling_mean + 3 * rolling_std
+lower = rolling_mean - 3 * rolling_std
+
+ax = s.plot(label="Signal")
+upper.plot(ax=ax, linestyle="--", label="Upper Bound")
+lower.plot(ax=ax, linestyle="--", label="Lower Bound")
+plt.legend()
+plt.title("Anomalien via Rolling-Bounds")
+plt.show()
+```
+
+---
+
+## 7.5 Strukturbruch vs Ausreißer
+
+Ein einzelner Peak → Ausreißer  
+Dauerhafte Niveauänderung → Strukturbruch
+
+Beide erfordern unterschiedliche Interpretation.
+
+---
+
+::: {.callout-note title="Methodischer Hinweis"}
+Bevor Sie Anomalien markieren:
+
+1. Trend prüfen  
+2. Saison prüfen  
+3. Baseline definieren  
+4. Schwellenwert begründen  
+:::
+
+---
+
+## 7.6 Mini-Aufgaben
+
+1. Entfernen Sie den Trend vor Anwendung des Z-Scores.  
+   - Wie verändert sich das Ergebnis?
+
+2. Verringern Sie den Schwellenwert von 3 auf 2.  
+   - Was passiert?
+
+3. Simulieren Sie einen dauerhaften Niveau-Sprung.  
+   - Wird dieser als Anomalie erkannt?

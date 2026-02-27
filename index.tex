@@ -1,0 +1,316 @@
+% Options for packages loaded elsewhere
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+\PassOptionsToPackage{dvipsnames,svgnames,x11names}{xcolor}
+%
+\documentclass[
+  ngerman,
+  letterpaper,
+  DIV=11]{scrreprt}
+\usepackage{xcolor}
+\usepackage{amsmath,amssymb}
+\setcounter{secnumdepth}{5}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math} % this also loads fontspec
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage{lmodern}
+\ifPDFTeX\else
+  % xetex/luatex font selection
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+% Make \paragraph and \subparagraph free-standing
+\makeatletter
+\ifx\paragraph\undefined\else
+  \let\oldparagraph\paragraph
+  \renewcommand{\paragraph}{
+    \@ifstar
+      \xxxParagraphStar
+      \xxxParagraphNoStar
+  }
+  \newcommand{\xxxParagraphStar}[1]{\oldparagraph*{#1}\mbox{}}
+  \newcommand{\xxxParagraphNoStar}[1]{\oldparagraph{#1}\mbox{}}
+\fi
+\ifx\subparagraph\undefined\else
+  \let\oldsubparagraph\subparagraph
+  \renewcommand{\subparagraph}{
+    \@ifstar
+      \xxxSubParagraphStar
+      \xxxSubParagraphNoStar
+  }
+  \newcommand{\xxxSubParagraphStar}[1]{\oldsubparagraph*{#1}\mbox{}}
+  \newcommand{\xxxSubParagraphNoStar}[1]{\oldsubparagraph{#1}\mbox{}}
+\fi
+\makeatother
+
+
+\usepackage{longtable,booktabs,array}
+\usepackage{calc} % for calculating minipage widths
+% Correct order of tables after \paragraph or \subparagraph
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}
+\makeatother
+% Allow footnotes in longtable head/foot
+\IfFileExists{footnotehyper.sty}{\usepackage{footnotehyper}}{\usepackage{footnote}}
+\makesavenoteenv{longtable}
+\usepackage{graphicx}
+\makeatletter
+\newsavebox\pandoc@box
+\newcommand*\pandocbounded[1]{% scales image to fit in text height/width
+  \sbox\pandoc@box{#1}%
+  \Gscale@div\@tempa{\textheight}{\dimexpr\ht\pandoc@box+\dp\pandoc@box\relax}%
+  \Gscale@div\@tempb{\linewidth}{\wd\pandoc@box}%
+  \ifdim\@tempb\p@<\@tempa\p@\let\@tempa\@tempb\fi% select the smaller of both
+  \ifdim\@tempa\p@<\p@\scalebox{\@tempa}{\usebox\pandoc@box}%
+  \else\usebox{\pandoc@box}%
+  \fi%
+}
+% Set default figure placement to htbp
+\def\fps@figure{htbp}
+\makeatother
+
+
+
+\ifLuaTeX
+\usepackage[bidi=basic]{babel}
+\else
+\usepackage[bidi=default]{babel}
+\fi
+% get rid of language-specific shorthands (see #6817):
+\let\LanguageShortHands\languageshorthands
+\def\languageshorthands#1{}
+\ifLuaTeX
+  \usepackage[german]{selnolig} % disable illegal ligatures
+\fi
+
+
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+
+
+
+ 
+
+
+\KOMAoption{captions}{tableheading}
+\makeatletter
+\@ifpackageloaded{bookmark}{}{\usepackage{bookmark}}
+\makeatother
+\makeatletter
+\@ifpackageloaded{caption}{}{\usepackage{caption}}
+\AtBeginDocument{%
+\ifdefined\contentsname
+  \renewcommand*\contentsname{Inhaltsverzeichnis}
+\else
+  \newcommand\contentsname{Inhaltsverzeichnis}
+\fi
+\ifdefined\listfigurename
+  \renewcommand*\listfigurename{Abbildungsverzeichnis}
+\else
+  \newcommand\listfigurename{Abbildungsverzeichnis}
+\fi
+\ifdefined\listtablename
+  \renewcommand*\listtablename{Tabellenverzeichnis}
+\else
+  \newcommand\listtablename{Tabellenverzeichnis}
+\fi
+\ifdefined\figurename
+  \renewcommand*\figurename{Abbildung}
+\else
+  \newcommand\figurename{Abbildung}
+\fi
+\ifdefined\tablename
+  \renewcommand*\tablename{Tabelle}
+\else
+  \newcommand\tablename{Tabelle}
+\fi
+}
+\@ifpackageloaded{float}{}{\usepackage{float}}
+\floatstyle{ruled}
+\@ifundefined{c@chapter}{\newfloat{codelisting}{h}{lop}}{\newfloat{codelisting}{h}{lop}[chapter]}
+\floatname{codelisting}{Listing}
+\newcommand*\listoflistings{\listof{codelisting}{Listingverzeichnis}}
+\makeatother
+\makeatletter
+\makeatother
+\makeatletter
+\@ifpackageloaded{caption}{}{\usepackage{caption}}
+\@ifpackageloaded{subcaption}{}{\usepackage{subcaption}}
+\makeatother
+\usepackage{bookmark}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same}
+\hypersetup{
+  pdftitle={Zeitreihenanalyse},
+  pdfauthor={Lukas Arnold; Simone Arnold; Florian Bagemihl; Matthias Baitsch; Marc Fehr; Maik Poetzsch; Sebastian Seipel},
+  pdflang={de},
+  colorlinks=true,
+  linkcolor={blue},
+  filecolor={Maroon},
+  citecolor={Blue},
+  urlcolor={Blue},
+  pdfcreator={LaTeX via pandoc}}
+
+
+\title{Zeitreihenanalyse}
+\author{Lukas Arnold \and Simone Arnold \and Florian
+Bagemihl \and Matthias Baitsch \and Marc Fehr \and Maik
+Poetzsch \and Sebastian Seipel}
+\date{2026-02-27}
+\begin{document}
+\maketitle
+
+\renewcommand*\contentsname{Inhaltsverzeichnis}
+{
+\hypersetup{linkcolor=}
+\setcounter{tocdepth}{0}
+\tableofcontents
+}
+
+\bookmarksetup{startatroot}
+
+\chapter*{Preamble}\label{preamble}
+\addcontentsline{toc}{chapter}{Preamble}
+
+\markboth{Preamble}{Preamble}
+
+\phantomsection\label{Lizenz}
+\begin{figure}
+
+\begin{minipage}{0.20\linewidth}
+\pandocbounded{\includegraphics[keepaspectratio]{index_files/mediabag/by.png}}\end{minipage}%
+%
+\begin{minipage}{0.80\linewidth}
+Bausteine Computergestützter Datenanalyse. ``Zeitreihenanalyse'' von
+Lukas Arnold, Simone Arnold, Florian Bagemihl, Matthias Baitsch, Marc
+Fehr, Maik Poetzsch und Sebastian Seipel ist lizensiert unter
+\href{https://creativecommons.org/licenses/by/4.0/deed.de}{CC BY 4.0}.
+Das Werk ist abrufbar unter
+\url{https://github.com/bausteine-der-datenanalyse/a-zeitreihenanalyse}.
+Ausgenommen von der Lizenz sind alle Logos und anders gekennzeichneten
+Inhalte. 2024\end{minipage}%
+
+\end{figure}%
+
+Zitiervorschlag
+
+Arnold, Lukas, Simone Arnold, Matthias Baitsch, Marc Fehr, Maik
+Poetzsch, und Sebastian Seipel. 2024. „Bausteine Computergestützter
+Datenanalyse. Methodenbaustein Numerik``.
+\url{https://github.com/bausteine-der-datenanalyse/a-zeitreihenanalyse}.
+
+BibTeX-Vorlage
+
+\begin{verbatim}
+@misc{BCD-Styleguide-2024,
+ title={Bausteine Computergestützter Datenanalyse. Methodenbaustein Numerik},
+ author={Arnold, Lukas and Arnold, Simone and Baitsch, Matthias and Fehr, Marc and Poetzsch, Maik and Seipel, Sebastian},
+ year={2024},
+ url={https://github.com/bausteine-der-datenanalyse/a-zeitreihenanalyse}} 
+\end{verbatim}
+
+\bookmarksetup{startatroot}
+
+\chapter*{Intro}\label{intro}
+\addcontentsline{toc}{chapter}{Intro}
+
+\markboth{Intro}{Intro}
+
+\section*{Voraussetzungen}\label{voraussetzungen}
+\addcontentsline{toc}{section}{Voraussetzungen}
+
+\markright{Voraussetzungen}
+
+\begin{itemize}
+\tightlist
+\item
+  Python-Grundlagen
+\item
+  NumPy (Arrays, grundlegende Operationen)
+\item
+  Matplotlib (Visualisierung)
+\item
+  Grundverständnis von Pandas (Series, DataFrame)
+\end{itemize}
+
+\section*{Verwendete Pakete und
+Datensätze}\label{verwendete-pakete-und-datensuxe4tze}
+\addcontentsline{toc}{section}{Verwendete Pakete und Datensätze}
+
+\markright{Verwendete Pakete und Datensätze}
+
+\subsection*{Pakete}\label{pakete}
+\addcontentsline{toc}{subsection}{Pakete}
+
+\begin{itemize}
+\tightlist
+\item
+  \href{https://numpy.org/}{NumPy}
+\item
+  \href{https://matplotlib.org/}{Matplotlib}
+\item
+  \href{https://pandas.pydata.org/}{Pandas}
+\end{itemize}
+
+\subsection*{Datensätze}\label{datensuxe4tze}
+\addcontentsline{toc}{subsection}{Datensätze}
+
+\section*{Bearbeitungszeit}\label{bearbeitungszeit}
+\addcontentsline{toc}{section}{Bearbeitungszeit}
+
+\markright{Bearbeitungszeit}
+
+Geschätzte Bearbeitungszeit: 2h
+
+\section*{Lernziele}\label{lernziele}
+\addcontentsline{toc}{section}{Lernziele}
+
+\markright{Lernziele}
+
+\begin{itemize}
+\tightlist
+\item
+  Zeitreihen strukturiert vorverarbeiten (Zeitindex, Missing, Ausreißer)
+\item
+  Resampling und Alignment methodisch korrekt einsetzen
+\item
+  Glättung so wählen, dass sie zur Fragestellung passt
+\item
+  Trend und Saisonanteile erkennen und interpretieren
+\item
+  zeitliche Abhängigkeiten mit Lag/Autokorrelation diagnostizieren
+\item
+  Anomalien mit einfachen, begründbaren Regeln detektieren
+\item
+  Forecast-Baselines implementieren und mit Fehlermaßen bewerten
+\end{itemize}
+
+
+
+
+\end{document}

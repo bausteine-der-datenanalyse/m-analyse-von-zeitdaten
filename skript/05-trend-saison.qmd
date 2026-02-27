@@ -1,0 +1,152 @@
+---
+title: "5 Trend & Saison"
+---
+
+# 5 Trend & Saison
+
+Viele Zeitreihen enthalten systematische Strukturen:
+
+- **Trend**: langfristige Entwicklung (steigend/fallend)
+- **Saison**: periodisch wiederkehrendes Muster
+- **Residuum**: verbleibende Schwankung
+
+Diese Zerlegung ist ein **Denkmodell**, das hilft, Struktur systematisch zu analysieren.
+
+---
+
+::: {.callout-note title="Merke"}
+Trend beschreibt eine langsame Veränderung,
+Saison beschreibt eine regelmäßige Wiederholung.
+:::
+
+---
+
+## 5.1 Beispielsignal
+
+```{python}
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+
+rng = np.random.default_rng(10)
+
+t = pd.date_range("2025-01-01", periods=24*14, freq="H")
+trend = np.linspace(0, 4, len(t))
+season = 1.2 * np.sin(2*np.pi*(t.hour)/24)
+noise = 0.4 * rng.normal(size=len(t))
+
+s = pd.Series(20 + trend + season + noise, index=t, name="signal")
+
+s.plot(title="Signal mit Trend und Tages-Saison")
+plt.show()
+```
+
+---
+
+## 5.2 Saison sichtbar machen
+
+### Mittelwert pro Stunde
+
+```{python}
+season_hour = s.groupby(s.index.hour).mean()
+
+season_hour.plot(marker="o")
+plt.title("Durchschnittlicher Tagesverlauf (0–23h)")
+plt.xlabel("Stunde")
+plt.ylabel("Mittelwert")
+plt.show()
+```
+
+::: {.callout-tip title="Interpretation"}
+Ein periodisches Muster in dieser Darstellung deutet auf Tages-Saison hin.
+:::
+
+---
+
+## 5.3 Trend schätzen (starke Glättung)
+
+::: {.panel-tabset}
+
+## Pandas
+
+```{python}
+trend_est = s.rolling("72H").mean()
+
+ax = s.plot(alpha=0.4, label="Signal")
+trend_est.plot(ax=ax, linewidth=2, label="Trend (Rolling 72H)")
+plt.legend()
+plt.title("Trend-Schätzung")
+plt.show()
+```
+
+## NumPy (Prinzip)
+
+```{python}
+import numpy as np
+
+y = s.to_numpy()
+
+def moving_average(y, window):
+    kernel = np.ones(window) / window
+    return np.convolve(y, kernel, mode="same")
+
+trend_np = moving_average(y, 72)
+
+plt.plot(y, alpha=0.4, label="Signal")
+plt.plot(trend_np, linewidth=2, label="Trend (MA 72)")
+plt.legend()
+plt.title("Trend-Schätzung (NumPy)")
+plt.show()
+```
+
+:::
+
+---
+
+## 5.4 Residuum berechnen (vereinfachte Zerlegung)
+
+Wir entfernen Trend und Saison grob:
+
+```{python}
+season_map = s.index.hour.map(season_hour)
+residual = s - trend_est - season_map
+
+residual.plot(title="Residuum (vereinfachte Zerlegung)")
+plt.show()
+```
+
+---
+
+::: {.callout-warning title="Achtung"}
+Diese Zerlegung ist didaktisch vereinfacht.
+In der Praxis existieren robustere Verfahren (z. B. STL).
+Hier geht es um das Prinzip.
+:::
+
+---
+
+## 5.5 Additives vs Multiplikatives Modell
+
+Additives Modell:
+
+Signal = Trend + Saison + Rauschen
+
+Multiplikatives Modell:
+
+Signal = Trend × Saison × Rauschen
+
+Multiplikative Modelle sind sinnvoll,
+wenn die Amplitude der Saison mit dem Niveau wächst.
+
+---
+
+## 5.6 Mini-Aufgaben
+
+1. Erhöhen Sie die Trendsteigung.  
+   - Wie beeinflusst das die Erkennung der Saison?
+
+2. Erzeugen Sie eine Wochen-Saison (Periodenlänge 7 Tage).  
+   - Wie würden Sie diese sichtbar machen?
+
+3. Testen Sie ein sehr großes Rolling-Fenster (z. B. 120H).  
+   - Welche Struktur bleibt übrig?

@@ -1,0 +1,41 @@
+---
+title: "9 Lernzielkontrolle"
+---
+
+# 9 Lernzielkontrolle
+
+Nutzen Sie diese Checkliste zur Selbstüberprüfung.
+
+---
+
+## 9.1 Fachliche Kompetenzen
+
+Ich kann …
+
+- [ ] eine Zeitreihe methodisch einordnen (Messprozess, Abtastrate).
+- [ ] eine Zeitreihe validieren (Sortierung, Duplikate, Missing Values).
+- [ ] Resampling begründet einsetzen (Aggregation vs. Interpolation).
+- [ ] Rolling Mean und EWMA unterscheiden und passend wählen.
+- [ ] Trend und Saison konzeptionell trennen.
+- [ ] Lag-Features erzeugen und interpretieren.
+- [ ] Autokorrelation interpretieren.
+- [ ] Anomalien global und lokal definieren.
+- [ ] Baseline-Forecasts implementieren.
+- [ ] Forecast-Modelle mit MAE bewerten.
+
+---
+
+## 9.2 Verständnisfragen
+
+1. Warum ist die Abtastrate für die Interpretation einer Saison entscheidend?
+2. Wann ist Interpolation problematisch?
+3. Warum kann ein Trend die Autokorrelation künstlich erhöhen?
+4. Warum sind Baselines methodisch wichtig?
+5. Wodurch unterscheidet sich ein Strukturbruch von einem Ausreißer?
+
+---
+
+::: {.callout-tip title="Hinweis"}
+Wenn mehrere Punkte unsicher sind, wiederholen Sie gezielt die entsprechenden Kapitel
+und bearbeiten Sie die Übungsaufgaben.
+:::

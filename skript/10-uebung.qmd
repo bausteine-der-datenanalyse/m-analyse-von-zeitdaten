@@ -1,0 +1,73 @@
+---
+title: "10 Übung: Zeitreihen-Workflow"
+---
+
+# 10 Übung: Zeitreihen-Workflow
+
+Diese Übung kombiniert mehrere Methoden aus dem Baustein.
+
+---
+
+## Aufgabe 1: Eigene Zeitreihe erzeugen
+
+Erzeugen Sie eine Zeitreihe mit:
+
+- 10 Tagen, stündlicher Abtastrate
+- Trend
+- Tages-Saison
+- Rauschen
+- mindestens 3 Anomalien
+
+Visualisieren Sie die Zeitreihe.
+
+---
+
+## Aufgabe 2: Validierung
+
+Bauen Sie absichtlich Fehler ein:
+
+- Duplikate
+- Missing Values
+- Unsortierte Zeitpunkte
+
+Implementieren Sie eine saubere Validierung.
+
+---
+
+## Aufgabe 3: Resampling
+
+- Aggregieren Sie auf Tagesmittel.
+- Vergleichen Sie Original und Aggregation.
+- Interpretieren Sie Informationsverlust.
+
+---
+
+## Aufgabe 4: Glättung
+
+- Testen Sie Rolling-Fenster von 6H, 24H, 72H.
+- Welche Struktur wird jeweils sichtbar?
+
+---
+
+## Aufgabe 5: Anomalien
+
+- Implementieren Sie eine EWMA-Baseline.
+- Detektieren Sie Anomalien.
+- Variieren Sie den Schwellenwert.
+
+---
+
+## Aufgabe 6: Forecast-Baselines
+
+- Train-Test-Split (80/20)
+- Naive
+- Seasonal Naive (24H)
+- MA(24)
+
+Vergleichen Sie die MAE-Werte und interpretieren Sie das Ergebnis.
+
+---
+
+::: {.callout-note title="Abgabeformat (optional)"}
+Plots + kurze Interpretation (Stichpunkte).
+:::

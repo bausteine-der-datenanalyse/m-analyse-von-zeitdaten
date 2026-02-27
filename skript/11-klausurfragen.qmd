@@ -1,0 +1,39 @@
+---
+title: "11 Klausurfragen"
+---
+
+# 11 Klausurfragen
+
+## Verständnisfragen
+
+1. Definieren Sie eine Zeitreihe.
+2. Was ist der Unterschied zwischen Aggregation und Interpolation?
+3. Erklären Sie Rolling Mean und EWMA konzeptionell.
+4. Was ist ein Lag-Feature?
+5. Was misst die Autokorrelation?
+6. Warum kann Trend die Autokorrelation beeinflussen?
+7. Erklären Sie den Unterschied zwischen globaler und lokaler Anomalie-Detektion.
+8. Was ist eine Forecast-Baseline?
+9. Warum sind Baselines methodisch notwendig?
+10. Was misst der MAE?
+
+---
+
+## Transferfragen
+
+1. Sie erhalten Maschinendaten mit starker Wochenperiodik.
+   - Welche Schritte würden Sie durchführen?
+
+2. Eine Zeitreihe zeigt plötzlich dauerhaft höhere Werte.
+   - Ausreißer oder Strukturbruch? Begründen Sie.
+
+3. Zwei Zeitreihen sollen verglichen werden,
+   eine minütlich, eine stündlich gemessen.
+   - Welche Schritte sind notwendig?
+
+---
+
+::: {.callout-warning title="Hinweis zur Prüfungsvorbereitung"}
+Begründen Sie Ihre Antworten stets methodisch.
+Reine Definitionen reichen meist nicht aus.
+:::

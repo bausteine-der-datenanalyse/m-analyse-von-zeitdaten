@@ -1,0 +1,7 @@
+- Zeitreihen strukturiert vorverarbeiten (Zeitindex, Missing, Ausreißer)
+- Resampling und Alignment methodisch korrekt einsetzen
+- Glättung so wählen, dass sie zur Fragestellung passt
+- Trend und Saisonanteile erkennen und interpretieren
+- zeitliche Abhängigkeiten mit Lag/Autokorrelation diagnostizieren
+- Anomalien mit einfachen, begründbaren Regeln detektieren
+- Forecast-Baselines implementieren und mit Fehlermaßen bewerten

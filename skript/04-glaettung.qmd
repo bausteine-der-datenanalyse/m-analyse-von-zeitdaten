@@ -1,0 +1,185 @@
+---
+title: "4 Glättung & Rauschreduktion"
+---
+
+# 4 Glättung & Rauschreduktion
+
+Glättung ist eine der wichtigsten Standardmethoden in der Zeitreihenanalyse.
+Sie hilft dabei,
+
+- Rauschen zu reduzieren,
+- Trend/Saison besser sichtbar zu machen,
+- eine **Baseline** zu definieren (z. B. für Anomalien).
+
+::: {.callout-note title="Merke"}
+Die Fensterbreite ist eine methodische Entscheidung:
+Sie sollte zur **Zeitskala der Fragestellung** passen.
+:::
+
+## 4.1 Beispielsignal
+
+Wir nutzen eine Zeitreihe mit Tagesmuster, Rauschen und einzelnen Ausreißern.
+
+```{python}
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+
+rng = np.random.default_rng(42)
+
+t = pd.date_range("2025-01-01", periods=24*10, freq="H")  # 10 Tage stündlich
+trend = np.linspace(0, 2, len(t))
+season = 0.9 * np.sin(2*np.pi*(t.hour)/24)
+noise = 0.35 * rng.normal(size=len(t))
+
+s = pd.Series(10 + trend + season + noise, index=t, name="signal")
+
+# Ausreißer
+s.iloc[30] += 3.0
+s.iloc[120] -= 2.5
+
+s.plot(title="Beispielsignal (roh)")
+plt.show()
+```
+
+## 4.2 Rolling Mean (gleitender Mittelwert)
+
+Rolling Mean ist die klassische Glättung: Mittelwert über ein Fenster.
+
+::: {.panel-tabset}
+
+## Pandas (empfohlen)
+
+```{python}
+roll_6h = s.rolling("6H").mean()
+roll_24h = s.rolling("24H").mean()
+
+ax = s.plot(alpha=0.45, label="Signal")
+roll_6h.plot(ax=ax, label="Rolling 6H")
+roll_24h.plot(ax=ax, label="Rolling 24H")
+plt.legend()
+plt.title("Rolling Mean (Pandas)")
+plt.show()
+```
+
+::: {.callout-tip title="Entscheidungshilfe"}
+- **6H**: reduziert kurzfristiges Rauschen, Ereignisse bleiben sichtbar  
+- **24H**: zeigt eher Grundniveau/Trend, dämpft Tagesmuster stark  
+:::
+
+## NumPy (Prinzip)
+
+NumPy-Variante: Moving Average als Faltung (`convolve`).
+
+```{python}
+import numpy as np
+import matplotlib.pyplot as plt
+
+y = s.to_numpy()
+
+def moving_average(y, window):
+    kernel = np.ones(window) / window
+    return np.convolve(y, kernel, mode="same")
+
+ma_6 = moving_average(y, 6)
+ma_24 = moving_average(y, 24)
+
+plt.plot(y, alpha=0.45, label="Signal")
+plt.plot(ma_6, label="MA 6 Samples")
+plt.plot(ma_24, label="MA 24 Samples")
+plt.legend()
+plt.title("Moving Average (NumPy)")
+plt.xlabel("Sample")
+plt.ylabel("Wert")
+plt.show()
+```
+
+::: {.callout-warning title="Achtung"}
+Bei der Faltung müssen Sie Randbehandlung bewusst akzeptieren (hier: `mode="same"`).
+Pandas behandelt Randbereiche konsistent mit `min_periods` und NaNs.
+:::
+
+:::
+
+## 4.3 EWMA (Exponentially Weighted Moving Average)
+
+EWMA glättet, gewichtet aber **neuere Werte stärker**.
+
+::: {.panel-tabset}
+
+## Pandas (empfohlen)
+
+```{python}
+ewm_fast = s.ewm(span=6, adjust=False).mean()
+ewm_slow = s.ewm(span=24, adjust=False).mean()
+
+ax = s.plot(alpha=0.45, label="Signal")
+ewm_fast.plot(ax=ax, label="EWMA span=6")
+ewm_slow.plot(ax=ax, label="EWMA span=24")
+plt.legend()
+plt.title("EWMA (Pandas)")
+plt.show()
+```
+
+::: {.callout-note title="Merke"}
+EWMA reagiert schneller auf Änderungen als Rolling Mean,
+weil ältere Werte exponentiell weniger Einfluss haben.
+:::
+
+## NumPy (Prinzip)
+
+EWMA kann rekursiv berechnet werden:
+
+\[
+m_t = \alpha \cdot y_t + (1-\alpha)\cdot m_{t-1}
+\]
+
+```{python}
+import numpy as np
+import matplotlib.pyplot as plt
+
+y = s.to_numpy()
+
+def ewma(y, alpha):
+    m = np.empty_like(y, dtype=float)
+    m[0] = y[0]
+    for i in range(1, len(y)):
+        m[i] = alpha * y[i] + (1 - alpha) * m[i-1]
+    return m
+
+m_fast = ewma(y, alpha=0.30)
+m_slow = ewma(y, alpha=0.08)
+
+plt.plot(y, alpha=0.45, label="Signal")
+plt.plot(m_fast, label="EWMA alpha=0.30")
+plt.plot(m_slow, label="EWMA alpha=0.08")
+plt.legend()
+plt.title("EWMA (NumPy)")
+plt.xlabel("Sample")
+plt.ylabel("Wert")
+plt.show()
+```
+
+:::
+
+## 4.4 Methodische Wahl: welches Verfahren wann?
+
+::: {.callout-tip title="Entscheidungshilfe"}
+**Rolling Mean** eignet sich gut, wenn…  
+- Sie ein klar definiertes Zeitfenster mitteln wollen (z. B. „letzte 24h“).
+
+**EWMA** eignet sich gut, wenn…  
+- Sie eine smoothe Baseline wollen, die schneller auf Änderungen reagiert.  
+- Sie Anomalien als Abweichung von einer dynamischen Baseline erkennen möchten.
+:::
+
+## 4.5 Mini-Aufgaben
+
+1. **Fensterwahl:** Testen Sie Rolling-Fenster von 3H, 12H, 48H.  
+   - Welche Strukturen werden jeweils sichtbar bzw. verschwinden?
+
+2. **Anomalien & Glättung:** Erhöhen Sie die Ausreißer-Amplitude.  
+   - Ab welcher Glättungsstärke „verschwindet“ der Ausreißer im geglätteten Signal?
+
+3. **EWMA-Empfindlichkeit:** Variieren Sie `span` (Pandas) bzw. `alpha` (NumPy).  
+   - Welche Parameter reagieren „schnell“, welche „träge“? Begründen Sie.
