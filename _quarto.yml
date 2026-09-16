@@ -14,7 +14,7 @@ book:
   date: today
   language: de-DE
   downloads: [pdf]
-  repo-url: "https://github.com/bausteine-der-datenanalyse/a-analyse-von-zeitdaten"
+  repo-url: "https://github.com/bausteine-der-datenanalyse/m-analyse-von-zeitdaten"
   repo-actions: [source]
   favicon: "skript/00-bilder/favicon_bcd_new.svg"
   sidebar:
