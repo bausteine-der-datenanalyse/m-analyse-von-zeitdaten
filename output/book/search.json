@@ -1,0 +1,752 @@
+[
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Zeitreihenanalyse",
+    "section": "",
+    "text": "Preamble",
+    "crumbs": [
+      "Preamble"
+    ]
+  },
+  {
+    "objectID": "index.html#voraussetzungen",
+    "href": "index.html#voraussetzungen",
+    "title": "Zeitreihenanalyse",
+    "section": "Voraussetzungen",
+    "text": "Voraussetzungen\n\nPython-Grundlagen\nNumPy (Arrays, grundlegende Operationen)\nMatplotlib (Visualisierung)\nGrundverständnis von Pandas (Series, DataFrame)",
+    "crumbs": [
+      "Preamble"
+    ]
+  },
+  {
+    "objectID": "index.html#verwendete-pakete-und-datensätze",
+    "href": "index.html#verwendete-pakete-und-datensätze",
+    "title": "Zeitreihenanalyse",
+    "section": "Verwendete Pakete und Datensätze",
+    "text": "Verwendete Pakete und Datensätze\n\nPakete\n\nNumPy\nMatplotlib\nPandas\n\n\n\nDatensätze",
+    "crumbs": [
+      "Preamble"
+    ]
+  },
+  {
+    "objectID": "index.html#bearbeitungszeit",
+    "href": "index.html#bearbeitungszeit",
+    "title": "Zeitreihenanalyse",
+    "section": "Bearbeitungszeit",
+    "text": "Bearbeitungszeit\nGeschätzte Bearbeitungszeit: 2h",
+    "crumbs": [
+      "Preamble"
+    ]
+  },
+  {
+    "objectID": "index.html#lernziele",
+    "href": "index.html#lernziele",
+    "title": "Zeitreihenanalyse",
+    "section": "Lernziele",
+    "text": "Lernziele\n\nZeitreihen strukturiert vorverarbeiten (Zeitindex, Missing, Ausreißer)\nResampling und Alignment methodisch korrekt einsetzen\nGlättung so wählen, dass sie zur Fragestellung passt\nTrend und Saisonanteile erkennen und interpretieren\nzeitliche Abhängigkeiten mit Lag/Autokorrelation diagnostizieren\nAnomalien mit einfachen, begründbaren Regeln detektieren\nForecast-Baselines implementieren und mit Fehlermaßen bewerten",
+    "crumbs": [
+      "Preamble"
+    ]
+  },
+  {
+    "objectID": "skript/01-einleitung.html",
+    "href": "skript/01-einleitung.html",
+    "title": "1  1 Einordnung: Zeitreihen als Messprozess",
+    "section": "",
+    "text": "2 1 Einordnung: Zeitreihen als Messprozess\nEine Zeitreihe ist das Ergebnis eines Messprozesses über die Zeit.\nTypische Beispiele:\nWichtig ist nicht nur der Zahlenwert selbst, sondern:",
+    "crumbs": [
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>1 Einordnung: Zeitreihen als Messprozess</span>"
+    ]
+  },
+  {
+    "objectID": "skript/01-einleitung.html#arbeitsdatensatz-erzeugen",
+    "href": "skript/01-einleitung.html#arbeitsdatensatz-erzeugen",
+    "title": "1  1 Einordnung: Zeitreihen als Messprozess",
+    "section": "2.1 1.1 Arbeitsdatensatz erzeugen",
+    "text": "2.1 1.1 Arbeitsdatensatz erzeugen\nWir erstellen eine synthetische Zeitreihe mit:\n\nTrend\n\nTagesperiodik\n\nRauschen\n\nAusreißern\n\nDiese Struktur ist typisch für reale technische Messdaten.\n\nPandas (empfohlen)NumPy (Prinzip)\n\n\n\nimport numpy as np\nimport pandas as pd\nimport matplotlib.pyplot as plt\n\nrng = np.random.default_rng(42)\n\n# Zeitindex: 14 Tage, stündliche Messung\nt = pd.date_range(\"2025-01-01\", periods=24*14, freq=\"h\")\n\ntrend = np.linspace(0, 3, len(t))\nseason = 0.8 * np.sin(2*np.pi*(t.hour)/24)\nnoise = 0.25 * rng.normal(size=len(t))\n\ny = 10 + trend + season + noise\ny = pd.Series(y, index=t, name=\"signal\")\n\n# künstliche Ausreißer\ny.iloc[50] += 3.5\ny.iloc[120] -= 2.8\n\ny.plot()\nplt.title(\"Zeitreihe (Trend + Saison + Rauschen)\")\nplt.xlabel(\"Zeit\")\nplt.ylabel(\"Wert\")\nplt.show()\n\n\n\n\n\n\n\n\n\n\nHier modellieren wir Zeit als einfachen Sample-Index.\n\nimport numpy as np\nimport matplotlib.pyplot as plt\n\nrng = np.random.default_rng(42)\n\nn = 24*14\nx = np.arange(n)\n\ntrend = np.linspace(0, 3, n)\nseason = 0.8 * np.sin(2*np.pi*(x % 24)/24)\nnoise = 0.25 * rng.normal(size=n)\n\ny = 10 + trend + season + noise\n\n# Ausreißer\ny[50] += 3.5\ny[120] -= 2.8\n\nplt.plot(y)\nplt.title(\"Zeitreihe (NumPy, ohne Zeitindex)\")\nplt.xlabel(\"Sample\")\nplt.ylabel(\"Wert\")\nplt.show()",
+    "crumbs": [
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>1 Einordnung: Zeitreihen als Messprozess</span>"
+    ]
+  },
+  {
+    "objectID": "skript/01-einleitung.html#typische-analysefragen",
+    "href": "skript/01-einleitung.html#typische-analysefragen",
+    "title": "1  1 Einordnung: Zeitreihen als Messprozess",
+    "section": "2.2 1.2 Typische Analysefragen",
+    "text": "2.2 1.2 Typische Analysefragen\nBei Zeitreihen treten immer wieder ähnliche Fragestellungen auf:\n\nGibt es einen Trend?\nExistiert eine Periodik (z. B. Tages- oder Wochenmuster)?\nWie stark ist das Rauschen?\nGibt es Anomalien?\nWie kann ich zukünftige Werte grob abschätzen?\n\n\n\n\n\n\n\nTippMethodischer Blick\n\n\n\nBevor Sie glätten oder modellieren:\n\nVisualisieren\n\nZeitskala prüfen\n\nStruktur erkennen\n\nErst dann weiter analysieren",
+    "crumbs": [
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>1 Einordnung: Zeitreihen als Messprozess</span>"
+    ]
+  },
+  {
+    "objectID": "skript/01-einleitung.html#strukturmodell-einer-zeitreihe",
+    "href": "skript/01-einleitung.html#strukturmodell-einer-zeitreihe",
+    "title": "1  1 Einordnung: Zeitreihen als Messprozess",
+    "section": "2.3 1.3 Strukturmodell einer Zeitreihe",
+    "text": "2.3 1.3 Strukturmodell einer Zeitreihe\nEine Zeitreihe lässt sich häufig konzeptionell darstellen als:\nSignal = Trend + Saison + Rauschen + Ausreißer\nDiese Zerlegung ist kein physikalisches Gesetz, sondern ein Denkmodell, das hilft, Muster systematisch zu analysieren.\n\n\n\n\n\n\nWarnungAchtung\n\n\n\nNicht jedes wiederkehrende Muster ist automatisch „Saison”.\nRegelmäßigkeit muss zur Abtastrate und zum Prozess plausibel passen.",
+    "crumbs": [
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>1 Einordnung: Zeitreihen als Messprozess</span>"
+    ]
+  },
+  {
+    "objectID": "skript/01-einleitung.html#mini-reflexion",
+    "href": "skript/01-einleitung.html#mini-reflexion",
+    "title": "1  1 Einordnung: Zeitreihen als Messprozess",
+    "section": "2.4 1.4 Mini-Reflexion",
+    "text": "2.4 1.4 Mini-Reflexion\nBeantworten Sie:\n\nWelche Periodik wurde hier modelliert?\nWelche Rolle spielt die Abtastrate?\nWürde eine tägliche Aggregation den Saisonanteil sichtbar oder unsichtbar machen?\nWie würden sich Ausreißer bei starker Glättung verhalten?\n\nDiese Fragen begleiten uns durch den gesamten Methodenbaustein.",
+    "crumbs": [
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>1 Einordnung: Zeitreihen als Messprozess</span>"
+    ]
+  },
+  {
+    "objectID": "skript/02-vorverarbeitung-validierung.html",
+    "href": "skript/02-vorverarbeitung-validierung.html",
+    "title": "2  2 Vorverarbeitung & Validierung einer Zeitreihe",
+    "section": "",
+    "text": "3 2 Vorverarbeitung & Validierung einer Zeitreihe\nBevor eine Zeitreihe analysiert wird, muss sie formal korrekt und konsistent sein.\nViele Fehler in späteren Analysen entstehen durch:",
+    "crumbs": [
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>2 Vorverarbeitung & Validierung einer Zeitreihe</span>"
+    ]
+  },
+  {
+    "objectID": "skript/02-vorverarbeitung-validierung.html#beispiel-zeitreihe-mit-problemen",
+    "href": "skript/02-vorverarbeitung-validierung.html#beispiel-zeitreihe-mit-problemen",
+    "title": "2  2 Vorverarbeitung & Validierung einer Zeitreihe",
+    "section": "3.1 2.1 Beispiel-Zeitreihe mit Problemen",
+    "text": "3.1 2.1 Beispiel-Zeitreihe mit Problemen\nWir erzeugen bewusst eine fehlerhafte Zeitreihe (unsortiert, Duplikate, Missing Values).\n\nimport numpy as np\nimport pandas as pd\n\nrng = np.random.default_rng(1)\n\nt = pd.date_range(\"2025-01-01\", periods=24*3, freq=\"h\")\ny = pd.Series(10 + rng.normal(size=len(t)), index=t, name=\"signal\")\n\n# Probleme erzeugen\ny = y.sample(frac=1)                      # unsortiert\ny = pd.concat([y, y.iloc[5:8]])           # Duplikate (append ist deprecated/entfernt)\ny.iloc[10:15] = np.nan                    # fehlende Werte\n\ny.head()\n\n2025-01-02 23:00:00     9.493708\n2025-01-01 15:00:00    10.598846\n2025-01-02 15:00:00    10.109014\n2025-01-01 16:00:00    10.039722\n2025-01-02 22:00:00    10.035586\nName: signal, dtype: float64",
+    "crumbs": [
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>2 Vorverarbeitung & Validierung einer Zeitreihe</span>"
+    ]
+  },
+  {
+    "objectID": "skript/02-vorverarbeitung-validierung.html#schritt-1-sortierung-sicherstellen",
+    "href": "skript/02-vorverarbeitung-validierung.html#schritt-1-sortierung-sicherstellen",
+    "title": "2  2 Vorverarbeitung & Validierung einer Zeitreihe",
+    "section": "3.2 2.2 Schritt 1: Sortierung sicherstellen",
+    "text": "3.2 2.2 Schritt 1: Sortierung sicherstellen\n\ny = y.sort_index()",
+    "crumbs": [
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>2 Vorverarbeitung & Validierung einer Zeitreihe</span>"
+    ]
+  },
+  {
+    "objectID": "skript/02-vorverarbeitung-validierung.html#schritt-2-duplikate-erkennen-und-behandeln",
+    "href": "skript/02-vorverarbeitung-validierung.html#schritt-2-duplikate-erkennen-und-behandeln",
+    "title": "2  2 Vorverarbeitung & Validierung einer Zeitreihe",
+    "section": "3.3 2.3 Schritt 2: Duplikate erkennen und behandeln",
+    "text": "3.3 2.3 Schritt 2: Duplikate erkennen und behandeln\nDuplikate erkennen:\n\ndup_mask = y.index.duplicated(keep=False)\ny[dup_mask].head(10)\n\n2025-01-01 21:00:00     9.724397\n2025-01-01 21:00:00     9.724397\n2025-01-01 22:00:00    11.294064\n2025-01-01 22:00:00    11.294064\n2025-01-03 19:00:00    10.759520\n2025-01-03 19:00:00    10.759520\nName: signal, dtype: float64\n\n\nDuplikate müssen methodisch entschieden behandelt werden, z. B.:\n\nMittelwert pro Zeitstempel (typisch bei Messwerten)\nersten/letzten Wert behalten (typisch bei Status-Updates)\nentfernen (wenn klar fehlerhaft)\n\nBeispiel: Mittelwert pro Zeitstempel\n\ny = y.groupby(level=0).mean()",
+    "crumbs": [
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>2 Vorverarbeitung & Validierung einer Zeitreihe</span>"
+    ]
+  },
+  {
+    "objectID": "skript/02-vorverarbeitung-validierung.html#schritt-3-fehlende-werte-analysieren",
+    "href": "skript/02-vorverarbeitung-validierung.html#schritt-3-fehlende-werte-analysieren",
+    "title": "2  2 Vorverarbeitung & Validierung einer Zeitreihe",
+    "section": "3.4 2.4 Schritt 3: Fehlende Werte analysieren",
+    "text": "3.4 2.4 Schritt 3: Fehlende Werte analysieren\n\ny.isna().sum()\n\nnp.int64(5)\n\n\n\n3.4.1 Visualisierung der Lücken\n\nimport matplotlib.pyplot as plt\n\ny.plot(title=\"Zeitreihe mit Missing Values\")\nplt.show()\n\n\n\n\n\n\n\n\n\n\n3.4.2 Behandlungsmöglichkeiten\n\ny_ffill = y.ffill()\ny_interp = y.interpolate(\"time\")\n\n\n\n\n\n\n\nTippEntscheidungshilfe\n\n\n\n\nffill: sinnvoll bei Zustandsdaten („gilt bis zur nächsten Messung“)\ninterpolate(\"time\"): sinnvoll bei kontinuierlichen Messgrößen",
+    "crumbs": [
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>2 Vorverarbeitung & Validierung einer Zeitreihe</span>"
+    ]
+  },
+  {
+    "objectID": "skript/02-vorverarbeitung-validierung.html#schritt-4-abtastrate-prüfen",
+    "href": "skript/02-vorverarbeitung-validierung.html#schritt-4-abtastrate-prüfen",
+    "title": "2  2 Vorverarbeitung & Validierung einer Zeitreihe",
+    "section": "3.5 2.5 Schritt 4: Abtastrate prüfen",
+    "text": "3.5 2.5 Schritt 4: Abtastrate prüfen\nIst die Zeitreihe regelmäßig?\n\ndiffs = y.index.to_series().diff()\ndiffs.value_counts().head()\n\n0 days 01:00:00    71\nName: count, dtype: int64\n\n\nWenn mehrere Zeitabstände auftreten → unregelmäßige Abtastung oder Zeitlücken.",
+    "crumbs": [
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>2 Vorverarbeitung & Validierung einer Zeitreihe</span>"
+    ]
+  },
+  {
+    "objectID": "skript/02-vorverarbeitung-validierung.html#zeitlücken-explizit-machen",
+    "href": "skript/02-vorverarbeitung-validierung.html#zeitlücken-explizit-machen",
+    "title": "2  2 Vorverarbeitung & Validierung einer Zeitreihe",
+    "section": "3.6 2.6 Zeitlücken explizit machen",
+    "text": "3.6 2.6 Zeitlücken explizit machen\nMit asfreq wird die erwartete Frequenz erzwungen. Fehlende Zeitpunkte werden als NaN sichtbar.\n\ny_regular = y.asfreq(\"h\")\ny_regular.isna().sum()\n\nnp.int64(5)\n\n\n\n\n\n\n\n\nWarnungAchtung\n\n\n\nOhne explizite Frequenz können Zeitlücken unsichtbar bleiben.",
+    "crumbs": [
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>2 Vorverarbeitung & Validierung einer Zeitreihe</span>"
+    ]
+  },
+  {
+    "objectID": "skript/02-vorverarbeitung-validierung.html#validierungs-checkliste",
+    "href": "skript/02-vorverarbeitung-validierung.html#validierungs-checkliste",
+    "title": "2  2 Vorverarbeitung & Validierung einer Zeitreihe",
+    "section": "3.7 2.7 Validierungs-Checkliste",
+    "text": "3.7 2.7 Validierungs-Checkliste\nBevor Sie weiter analysieren:\n\nIndex ist DatetimeIndex\nZeitreihe ist sortiert\nDuplikate identifiziert und begründet behandelt\nFehlende Werte identifiziert und Strategie gewählt\nAbtastrate geprüft\nFrequenz (falls sinnvoll) explizit gesetzt",
+    "crumbs": [
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>2 Vorverarbeitung & Validierung einer Zeitreihe</span>"
+    ]
+  },
+  {
+    "objectID": "skript/02-vorverarbeitung-validierung.html#mini-aufgabe",
+    "href": "skript/02-vorverarbeitung-validierung.html#mini-aufgabe",
+    "title": "2  2 Vorverarbeitung & Validierung einer Zeitreihe",
+    "section": "3.8 2.8 Mini-Aufgabe",
+    "text": "3.8 2.8 Mini-Aufgabe\nErzeugen Sie selbst eine Zeitreihe mit:\n\nunregelmäßiger Abtastung\n5 fehlenden Zeitpunkten\n3 Duplikaten\n\nImplementieren Sie anschließend eine saubere Validierung gemäß Checkliste.",
+    "crumbs": [
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>2 Vorverarbeitung & Validierung einer Zeitreihe</span>"
+    ]
+  },
+  {
+    "objectID": "skript/03-resampling-alignment.html",
+    "href": "skript/03-resampling-alignment.html",
+    "title": "3  3 Resampling & Alignment",
+    "section": "",
+    "text": "4 3 Resampling & Alignment\nZeitreihen liegen häufig in unterschiedlichen Abtastraten vor oder müssen auf eine andere Zeitskala transformiert werden.\nTypische Gründe:",
+    "crumbs": [
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>3 Resampling & Alignment</span>"
+    ]
+  },
+  {
+    "objectID": "skript/03-resampling-alignment.html#ausgangszeitreihe-stündlich",
+    "href": "skript/03-resampling-alignment.html#ausgangszeitreihe-stündlich",
+    "title": "3  3 Resampling & Alignment",
+    "section": "4.1 3.1 Ausgangszeitreihe (stündlich)",
+    "text": "4.1 3.1 Ausgangszeitreihe (stündlich)\n\nimport numpy as np\nimport pandas as pd\nimport matplotlib.pyplot as plt\n\nrng = np.random.default_rng(2)\n\nt = pd.date_range(\"2025-01-01\", periods=24*5, freq=\"h\")\ny = pd.Series(10 + rng.normal(size=len(t)), index=t, name=\"signal\")\n\ny.plot(title=\"Stündliche Zeitreihe\")\nplt.show()",
+    "crumbs": [
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>3 Resampling & Alignment</span>"
+    ]
+  },
+  {
+    "objectID": "skript/03-resampling-alignment.html#downsampling-aggregation",
+    "href": "skript/03-resampling-alignment.html#downsampling-aggregation",
+    "title": "3  3 Resampling & Alignment",
+    "section": "4.2 3.2 Downsampling (Aggregation)",
+    "text": "4.2 3.2 Downsampling (Aggregation)\nWir aggregieren von Stunden auf Tage.\n\ndaily_mean = y.resample(\"D\").mean()\ndaily_max = y.resample(\"D\").max()\n\nax = daily_mean.plot(marker=\"o\", label=\"Tagesmittel\")\ndaily_max.plot(ax=ax, marker=\"o\", label=\"Tagesmaximum\")\nplt.legend()\nplt.title(\"Downsampling: Stunden → Tage\")\nplt.show()\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nTippEntscheidungshilfe\n\n\n\n\nMittelwert → glättet Schwankungen\n\nMaximum → zeigt Extremwerte\n\nSumme → sinnvoll bei Mengen (z. B. Energieverbrauch)",
+    "crumbs": [
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>3 Resampling & Alignment</span>"
+    ]
+  },
+  {
+    "objectID": "skript/03-resampling-alignment.html#upsampling-interpolation",
+    "href": "skript/03-resampling-alignment.html#upsampling-interpolation",
+    "title": "3  3 Resampling & Alignment",
+    "section": "4.3 3.3 Upsampling (Interpolation)",
+    "text": "4.3 3.3 Upsampling (Interpolation)\nWir erhöhen die zeitliche Auflösung.\n\ny_2h = y.resample(\"2h\").mean()\ny_up = y_2h.resample(\"h\").interpolate(\"time\")\n\nax = y_2h.plot(marker=\"o\", label=\"2H (aggregiert)\")\ny_up.plot(ax=ax, alpha=0.7, label=\"Interpoliert auf 1H\")\nplt.legend()\nplt.title(\"Upsampling mit Interpolation\")\nplt.show()\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nWarnungAchtung\n\n\n\nInterpolation erzeugt keine neuen Messinformationen, sondern modelliert einen plausiblen Verlauf.",
+    "crumbs": [
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>3 Resampling & Alignment</span>"
+    ]
+  },
+  {
+    "objectID": "skript/03-resampling-alignment.html#alignment-zweier-zeitreihen",
+    "href": "skript/03-resampling-alignment.html#alignment-zweier-zeitreihen",
+    "title": "3  3 Resampling & Alignment",
+    "section": "4.4 3.4 Alignment zweier Zeitreihen",
+    "text": "4.4 3.4 Alignment zweier Zeitreihen\nZwei Zeitreihen mit unterschiedlicher Abtastrate:\n\nt2 = pd.date_range(\"2025-01-01\", periods=24*5, freq=\"2h\")\ny2 = pd.Series(5 + rng.normal(size=len(t2)), index=t2, name=\"signal2\")\n\nZur gemeinsamen Analyse müssen beide Reihen dieselbe Frequenz haben.\n\ny2_aligned = y2.resample(\"h\").interpolate(\"time\")\n\ndf = pd.concat([y, y2_aligned], axis=1)\n\ndf.plot(title=\"Aligned Time Series\")\nplt.show()\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nHinweisMerke\n\n\n\nAlignment bedeutet: - gleiche Frequenz - gleicher Zeitbereich - gleiche Zeitzone",
+    "crumbs": [
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>3 Resampling & Alignment</span>"
+    ]
+  },
+  {
+    "objectID": "skript/03-resampling-alignment.html#häufige-fehlerquellen",
+    "href": "skript/03-resampling-alignment.html#häufige-fehlerquellen",
+    "title": "3  3 Resampling & Alignment",
+    "section": "4.5 3.5 Häufige Fehlerquellen",
+    "text": "4.5 3.5 Häufige Fehlerquellen\n\nVergleiche ohne vorheriges Resampling\nMischung von lokaler Zeit und UTC\nAggregation ohne Berücksichtigung der Datentypen (z. B. Summe vs Mittelwert)",
+    "crumbs": [
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>3 Resampling & Alignment</span>"
+    ]
+  },
+  {
+    "objectID": "skript/03-resampling-alignment.html#mini-aufgabe",
+    "href": "skript/03-resampling-alignment.html#mini-aufgabe",
+    "title": "3  3 Resampling & Alignment",
+    "section": "4.6 3.6 Mini-Aufgabe",
+    "text": "4.6 3.6 Mini-Aufgabe\n\nErzeugen Sie eine minütliche Zeitreihe über 2 Tage.\nAggregieren Sie auf Stundenmittel.\nVergleichen Sie visuell:\n\nOriginal\nStundenmittel\n\nInterpretieren Sie den Informationsverlust.",
+    "crumbs": [
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>3 Resampling & Alignment</span>"
+    ]
+  },
+  {
+    "objectID": "skript/04-glaettung.html",
+    "href": "skript/04-glaettung.html",
+    "title": "4  4 Glättung & Rauschreduktion",
+    "section": "",
+    "text": "5 4 Glättung & Rauschreduktion\nGlättung ist eine der wichtigsten Standardmethoden in der Zeitreihenanalyse. Sie hilft dabei,",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>4 Glättung & Rauschreduktion</span>"
+    ]
+  },
+  {
+    "objectID": "skript/04-glaettung.html#beispielsignal",
+    "href": "skript/04-glaettung.html#beispielsignal",
+    "title": "4  4 Glättung & Rauschreduktion",
+    "section": "5.1 4.1 Beispielsignal",
+    "text": "5.1 4.1 Beispielsignal\nWir nutzen eine Zeitreihe mit Tagesmuster, Rauschen und einzelnen Ausreißern.\n\nimport numpy as np\nimport pandas as pd\nimport matplotlib.pyplot as plt\n\nrng = np.random.default_rng(42)\n\nt = pd.date_range(\"2025-01-01\", periods=24*10, freq=\"h\")  # 10 Tage stündlich\ntrend = np.linspace(0, 2, len(t))\nseason = 0.9 * np.sin(2*np.pi*(t.hour)/24)\nnoise = 0.35 * rng.normal(size=len(t))\n\ns = pd.Series(10 + trend + season + noise, index=t, name=\"signal\")\n\n# Ausreißer\ns.iloc[30] += 3.0\ns.iloc[120] -= 2.5\n\ns.plot(title=\"Beispielsignal (roh)\")\nplt.show()",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>4 Glättung & Rauschreduktion</span>"
+    ]
+  },
+  {
+    "objectID": "skript/04-glaettung.html#rolling-mean-gleitender-mittelwert",
+    "href": "skript/04-glaettung.html#rolling-mean-gleitender-mittelwert",
+    "title": "4  4 Glättung & Rauschreduktion",
+    "section": "5.2 4.2 Rolling Mean (gleitender Mittelwert)",
+    "text": "5.2 4.2 Rolling Mean (gleitender Mittelwert)\nRolling Mean ist die klassische Glättung: Mittelwert über ein Fenster.\n\nPandas (empfohlen)NumPy (Prinzip)\n\n\n\nroll_6h = s.rolling(\"6h\").mean()\nroll_24h = s.rolling(\"24h\").mean()\n\nax = s.plot(alpha=0.45, label=\"Signal\")\nroll_6h.plot(ax=ax, label=\"Rolling 6H\")\nroll_24h.plot(ax=ax, label=\"Rolling 24H\")\nplt.legend()\nplt.title(\"Rolling Mean (Pandas)\")\nplt.show()\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nTippEntscheidungshilfe\n\n\n\n\n6H: reduziert kurzfristiges Rauschen, Ereignisse bleiben sichtbar\n\n24H: zeigt eher Grundniveau/Trend, dämpft Tagesmuster stark\n\n\n\n\n\n\nNumPy-Variante: Moving Average als Faltung (convolve).\n\nimport numpy as np\nimport matplotlib.pyplot as plt\n\ny = s.to_numpy()\n\ndef moving_average(y, window):\n    kernel = np.ones(window) / window\n    return np.convolve(y, kernel, mode=\"same\")\n\nma_6 = moving_average(y, 6)\nma_24 = moving_average(y, 24)\n\nplt.plot(y, alpha=0.45, label=\"Signal\")\nplt.plot(ma_6, label=\"MA 6 Samples\")\nplt.plot(ma_24, label=\"MA 24 Samples\")\nplt.legend()\nplt.title(\"Moving Average (NumPy)\")\nplt.xlabel(\"Sample\")\nplt.ylabel(\"Wert\")\nplt.show()\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nWarnungAchtung\n\n\n\nBei der Faltung müssen Sie Randbehandlung bewusst akzeptieren (hier: mode=\"same\"). Pandas behandelt Randbereiche konsistent mit min_periods und NaNs.",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>4 Glättung & Rauschreduktion</span>"
+    ]
+  },
+  {
+    "objectID": "skript/04-glaettung.html#ewma-exponentially-weighted-moving-average",
+    "href": "skript/04-glaettung.html#ewma-exponentially-weighted-moving-average",
+    "title": "4  4 Glättung & Rauschreduktion",
+    "section": "5.3 4.3 EWMA (Exponentially Weighted Moving Average)",
+    "text": "5.3 4.3 EWMA (Exponentially Weighted Moving Average)\nEWMA glättet, gewichtet aber neuere Werte stärker.\n\nPandas (empfohlen)NumPy (Prinzip)\n\n\n\newm_fast = s.ewm(span=6, adjust=False).mean()\newm_slow = s.ewm(span=24, adjust=False).mean()\n\nax = s.plot(alpha=0.45, label=\"Signal\")\newm_fast.plot(ax=ax, label=\"EWMA span=6\")\newm_slow.plot(ax=ax, label=\"EWMA span=24\")\nplt.legend()\nplt.title(\"EWMA (Pandas)\")\nplt.show()\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nHinweisMerke\n\n\n\nEWMA reagiert schneller auf Änderungen als Rolling Mean, weil ältere Werte exponentiell weniger Einfluss haben.\n\n\n\n\nEWMA kann rekursiv berechnet werden:\n\\[\nm_t = \\alpha \\cdot y_t + (1-\\alpha)\\cdot m_{t-1}\n\\]\n\nimport numpy as np\nimport matplotlib.pyplot as plt\n\ny = s.to_numpy()\n\ndef ewma(y, alpha):\n    m = np.empty_like(y, dtype=float)\n    m[0] = y[0]\n    for i in range(1, len(y)):\n        m[i] = alpha * y[i] + (1 - alpha) * m[i-1]\n    return m\n\nm_fast = ewma(y, alpha=0.30)\nm_slow = ewma(y, alpha=0.08)\n\nplt.plot(y, alpha=0.45, label=\"Signal\")\nplt.plot(m_fast, label=\"EWMA alpha=0.30\")\nplt.plot(m_slow, label=\"EWMA alpha=0.08\")\nplt.legend()\nplt.title(\"EWMA (NumPy)\")\nplt.xlabel(\"Sample\")\nplt.ylabel(\"Wert\")\nplt.show()",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>4 Glättung & Rauschreduktion</span>"
+    ]
+  },
+  {
+    "objectID": "skript/04-glaettung.html#methodische-wahl-welches-verfahren-wann",
+    "href": "skript/04-glaettung.html#methodische-wahl-welches-verfahren-wann",
+    "title": "4  4 Glättung & Rauschreduktion",
+    "section": "5.4 4.4 Methodische Wahl: welches Verfahren wann?",
+    "text": "5.4 4.4 Methodische Wahl: welches Verfahren wann?\n\n\n\n\n\n\nTippEntscheidungshilfe\n\n\n\nRolling Mean eignet sich gut, wenn…\n- Sie ein klar definiertes Zeitfenster mitteln wollen (z. B. „letzte 24h“).\nEWMA eignet sich gut, wenn…\n- Sie eine smoothe Baseline wollen, die schneller auf Änderungen reagiert.\n- Sie Anomalien als Abweichung von einer dynamischen Baseline erkennen möchten.",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>4 Glättung & Rauschreduktion</span>"
+    ]
+  },
+  {
+    "objectID": "skript/04-glaettung.html#mini-aufgaben",
+    "href": "skript/04-glaettung.html#mini-aufgaben",
+    "title": "4  4 Glättung & Rauschreduktion",
+    "section": "5.5 4.5 Mini-Aufgaben",
+    "text": "5.5 4.5 Mini-Aufgaben\n\nFensterwahl: Testen Sie Rolling-Fenster von 3H, 12H, 48H.\n\nWelche Strukturen werden jeweils sichtbar bzw. verschwinden?\n\nAnomalien & Glättung: Erhöhen Sie die Ausreißer-Amplitude.\n\nAb welcher Glättungsstärke „verschwindet“ der Ausreißer im geglätteten Signal?\n\nEWMA-Empfindlichkeit: Variieren Sie span (Pandas) bzw. alpha (NumPy).\n\nWelche Parameter reagieren „schnell“, welche „träge“? Begründen Sie.",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>4 Glättung & Rauschreduktion</span>"
+    ]
+  },
+  {
+    "objectID": "skript/05-trend-saison.html",
+    "href": "skript/05-trend-saison.html",
+    "title": "5  5 Trend & Saison",
+    "section": "",
+    "text": "6 5 Trend & Saison\nViele Zeitreihen enthalten systematische Strukturen:\nDiese Zerlegung ist ein Denkmodell, das hilft, Struktur systematisch zu analysieren.",
+    "crumbs": [
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>5 Trend & Saison</span>"
+    ]
+  },
+  {
+    "objectID": "skript/05-trend-saison.html#beispielsignal",
+    "href": "skript/05-trend-saison.html#beispielsignal",
+    "title": "5  5 Trend & Saison",
+    "section": "6.1 5.1 Beispielsignal",
+    "text": "6.1 5.1 Beispielsignal\n\nimport numpy as np\nimport pandas as pd\nimport matplotlib.pyplot as plt\n\nrng = np.random.default_rng(10)\n\nt = pd.date_range(\"2025-01-01\", periods=24*14, freq=\"h\")\ntrend = np.linspace(0, 4, len(t))\nseason = 1.2 * np.sin(2*np.pi*(t.hour)/24)\nnoise = 0.4 * rng.normal(size=len(t))\n\ns = pd.Series(20 + trend + season + noise, index=t, name=\"signal\")\n\ns.plot(title=\"Signal mit Trend und Tages-Saison\")\nplt.show()",
+    "crumbs": [
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>5 Trend & Saison</span>"
+    ]
+  },
+  {
+    "objectID": "skript/05-trend-saison.html#saison-sichtbar-machen",
+    "href": "skript/05-trend-saison.html#saison-sichtbar-machen",
+    "title": "5  5 Trend & Saison",
+    "section": "6.2 5.2 Saison sichtbar machen",
+    "text": "6.2 5.2 Saison sichtbar machen\n\n6.2.1 Mittelwert pro Stunde\n\nseason_hour = s.groupby(s.index.hour).mean()\n\nseason_hour.plot(marker=\"o\")\nplt.title(\"Durchschnittlicher Tagesverlauf (0–23h)\")\nplt.xlabel(\"Stunde\")\nplt.ylabel(\"Mittelwert\")\nplt.show()\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nTippInterpretation\n\n\n\nEin periodisches Muster in dieser Darstellung deutet auf Tages-Saison hin.",
+    "crumbs": [
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>5 Trend & Saison</span>"
+    ]
+  },
+  {
+    "objectID": "skript/05-trend-saison.html#trend-schätzen-starke-glättung",
+    "href": "skript/05-trend-saison.html#trend-schätzen-starke-glättung",
+    "title": "5  5 Trend & Saison",
+    "section": "6.3 5.3 Trend schätzen (starke Glättung)",
+    "text": "6.3 5.3 Trend schätzen (starke Glättung)\n\nPandasNumPy (Prinzip)\n\n\n\ntrend_est = s.rolling(\"72h\").mean()\n\nax = s.plot(alpha=0.4, label=\"Signal\")\ntrend_est.plot(ax=ax, linewidth=2, label=\"Trend (Rolling 72H)\")\nplt.legend()\nplt.title(\"Trend-Schätzung\")\nplt.show()\n\n\n\n\n\n\n\n\n\n\n\nimport numpy as np\n\ny = s.to_numpy()\n\ndef moving_average(y, window):\n    kernel = np.ones(window) / window\n    return np.convolve(y, kernel, mode=\"same\")\n\ntrend_np = moving_average(y, 72)\n\nplt.plot(y, alpha=0.4, label=\"Signal\")\nplt.plot(trend_np, linewidth=2, label=\"Trend (MA 72)\")\nplt.legend()\nplt.title(\"Trend-Schätzung (NumPy)\")\nplt.show()",
+    "crumbs": [
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>5 Trend & Saison</span>"
+    ]
+  },
+  {
+    "objectID": "skript/05-trend-saison.html#residuum-berechnen-vereinfachte-zerlegung",
+    "href": "skript/05-trend-saison.html#residuum-berechnen-vereinfachte-zerlegung",
+    "title": "5  5 Trend & Saison",
+    "section": "6.4 5.4 Residuum berechnen (vereinfachte Zerlegung)",
+    "text": "6.4 5.4 Residuum berechnen (vereinfachte Zerlegung)\nWir entfernen Trend und Saison grob:\n\nseason_map = s.index.hour.map(season_hour)\nresidual = s - trend_est - season_map\n\nresidual.plot(title=\"Residuum (vereinfachte Zerlegung)\")\nplt.show()\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nWarnungAchtung\n\n\n\nDiese Zerlegung ist didaktisch vereinfacht. In der Praxis existieren robustere Verfahren (z. B. STL). Hier geht es um das Prinzip.",
+    "crumbs": [
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>5 Trend & Saison</span>"
+    ]
+  },
+  {
+    "objectID": "skript/05-trend-saison.html#additives-vs-multiplikatives-modell",
+    "href": "skript/05-trend-saison.html#additives-vs-multiplikatives-modell",
+    "title": "5  5 Trend & Saison",
+    "section": "6.5 5.5 Additives vs Multiplikatives Modell",
+    "text": "6.5 5.5 Additives vs Multiplikatives Modell\nAdditives Modell:\nSignal = Trend + Saison + Rauschen\nMultiplikatives Modell:\nSignal = Trend × Saison × Rauschen\nMultiplikative Modelle sind sinnvoll, wenn die Amplitude der Saison mit dem Niveau wächst.",
+    "crumbs": [
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>5 Trend & Saison</span>"
+    ]
+  },
+  {
+    "objectID": "skript/05-trend-saison.html#mini-aufgaben",
+    "href": "skript/05-trend-saison.html#mini-aufgaben",
+    "title": "5  5 Trend & Saison",
+    "section": "6.6 5.6 Mini-Aufgaben",
+    "text": "6.6 5.6 Mini-Aufgaben\n\nErhöhen Sie die Trendsteigung.\n\nWie beeinflusst das die Erkennung der Saison?\n\nErzeugen Sie eine Wochen-Saison (Periodenlänge 7 Tage).\n\nWie würden Sie diese sichtbar machen?\n\nTesten Sie ein sehr großes Rolling-Fenster (z. B. 120H).\n\nWelche Struktur bleibt übrig?",
+    "crumbs": [
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>5 Trend & Saison</span>"
+    ]
+  },
+  {
+    "objectID": "skript/06-lags-autokorrelation.html",
+    "href": "skript/06-lags-autokorrelation.html",
+    "title": "6  6 Lags & Autokorrelation",
+    "section": "",
+    "text": "7 6 Lags & Autokorrelation\nZeitreihen unterscheiden sich von klassischen Datensätzen, weil Beobachtungen nicht unabhängig sind.\nDer Wert zum Zeitpunkt t hängt häufig von vorherigen Werten ab.\nDiese zeitliche Abhängigkeit untersuchen wir mit:",
+    "crumbs": [
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>6 Lags & Autokorrelation</span>"
+    ]
+  },
+  {
+    "objectID": "skript/06-lags-autokorrelation.html#beispielsignal",
+    "href": "skript/06-lags-autokorrelation.html#beispielsignal",
+    "title": "6  6 Lags & Autokorrelation",
+    "section": "7.1 6.1 Beispielsignal",
+    "text": "7.1 6.1 Beispielsignal\n\nimport numpy as np\nimport pandas as pd\nimport matplotlib.pyplot as plt\n\nrng = np.random.default_rng(21)\n\nt = pd.date_range(\"2025-01-01\", periods=24*14, freq=\"h\")\ntrend = np.linspace(0, 2, len(t))\nseason = 0.8 * np.sin(2*np.pi*(t.hour)/24)\nnoise = 0.4 * rng.normal(size=len(t))\n\ns = pd.Series(15 + trend + season + noise, index=t, name=\"signal\")\n\ns.plot(title=\"Beispielsignal\")\nplt.show()",
+    "crumbs": [
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>6 Lags & Autokorrelation</span>"
+    ]
+  },
+  {
+    "objectID": "skript/06-lags-autokorrelation.html#lag-features",
+    "href": "skript/06-lags-autokorrelation.html#lag-features",
+    "title": "6  6 Lags & Autokorrelation",
+    "section": "7.2 6.2 Lag-Features",
+    "text": "7.2 6.2 Lag-Features\nEin Lag verschiebt die Zeitreihe nach hinten.\n\nPandasNumPy (Prinzip)\n\n\n\nlag_1h = s.shift(1)\nlag_24h = s.shift(24)\n\ndf_lags = pd.DataFrame({\n    \"y\": s,\n    \"lag_1h\": lag_1h,\n    \"lag_24h\": lag_24h\n})\n\ndf_lags.head()\n\n\n\n\n\n\n\n\ny\nlag_1h\nlag_24h\n\n\n\n\n2025-01-01 00:00:00\n15.143509\nNaN\nNaN\n\n\n2025-01-01 01:00:00\n15.817296\n15.143509\nNaN\n\n\n2025-01-01 02:00:00\n14.697408\n15.817296\nNaN\n\n\n2025-01-01 03:00:00\n16.258241\n14.697408\nNaN\n\n\n2025-01-01 04:00:00\n15.697774\n16.258241\nNaN\n\n\n\n\n\n\n\n\n\n\ny = s.to_numpy()\n\nlag1 = np.roll(y, 1)\nlag24 = np.roll(y, 24)\n\nlag1[0] = np.nan\nlag24[:24] = np.nan\n\n\n\n\n\n\n\n\n\n\n\nTippInterpretation\n\n\n\nEin hoher Zusammenhang zwischen y(t) und y(t-24) deutet auf eine Tagesperiodik hin.",
+    "crumbs": [
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>6 Lags & Autokorrelation</span>"
+    ]
+  },
+  {
+    "objectID": "skript/06-lags-autokorrelation.html#autokorrelation-berechnen",
+    "href": "skript/06-lags-autokorrelation.html#autokorrelation-berechnen",
+    "title": "6  6 Lags & Autokorrelation",
+    "section": "7.3 6.3 Autokorrelation berechnen",
+    "text": "7.3 6.3 Autokorrelation berechnen\nAutokorrelation misst die Korrelation zwischen y(t) und y(t-k).\n\nPandasNumPy (Prinzip)\n\n\n\nlags = range(1, 49)\nac = [s.corr(s.shift(k)) for k in lags]\n\nplt.stem(list(lags), ac)\nplt.title(\"Autokorrelation (1–48 Stunden)\")\nplt.xlabel(\"Lag (h)\")\nplt.ylabel(\"Korrelation\")\nplt.show()\n\n\n\n\n\n\n\n\n\n\n\nimport numpy as np\n\ny = s.to_numpy()\ny = y - np.nanmean(y)\n\ndef autocorr(y, k):\n    return np.corrcoef(y[:-k], y[k:])[0,1]\n\nlags = range(1, 49)\nac_np = [autocorr(y, k) for k in lags]\n\nplt.stem(list(lags), ac_np)\nplt.title(\"Autokorrelation (NumPy)\")\nplt.xlabel(\"Lag\")\nplt.ylabel(\"Korrelation\")\nplt.show()",
+    "crumbs": [
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>6 Lags & Autokorrelation</span>"
+    ]
+  },
+  {
+    "objectID": "skript/06-lags-autokorrelation.html#interpretation-der-autokorrelation",
+    "href": "skript/06-lags-autokorrelation.html#interpretation-der-autokorrelation",
+    "title": "6  6 Lags & Autokorrelation",
+    "section": "7.4 6.4 Interpretation der Autokorrelation",
+    "text": "7.4 6.4 Interpretation der Autokorrelation\nTypische Muster:\n\nLangsam abfallende Kurve → starker Trend\nPeriodische Peaks (z. B. bei 24, 48, 72) → Saison\nSchneller Abfall gegen 0 → schwache Abhängigkeit\n\n\n\n\n\n\n\n\nWarnungAchtung\n\n\n\nTrend kann Autokorrelation künstlich erhöhen. Gegebenenfalls zuerst detrenden oder differenzieren.",
+    "crumbs": [
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>6 Lags & Autokorrelation</span>"
+    ]
+  },
+  {
+    "objectID": "skript/06-lags-autokorrelation.html#mini-aufgaben",
+    "href": "skript/06-lags-autokorrelation.html#mini-aufgaben",
+    "title": "6  6 Lags & Autokorrelation",
+    "section": "7.5 6.5 Mini-Aufgaben",
+    "text": "7.5 6.5 Mini-Aufgaben\n\nEntfernen Sie den Trend (z. B. durch Rolling Mean).\n\nWie verändert sich die Autokorrelation?\n\nErzeugen Sie eine Zeitreihe ohne Saison.\n\nWie sieht die Autokorrelationsfunktion aus?\n\nErzeugen Sie reine Zufallsdaten.\n\nWas erwarten Sie?",
+    "crumbs": [
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>6 Lags & Autokorrelation</span>"
+    ]
+  },
+  {
+    "objectID": "skript/07-anomalien.html",
+    "href": "skript/07-anomalien.html",
+    "title": "7  7 Anomalien",
+    "section": "",
+    "text": "8 7 Anomalien\nAnomalien sind Beobachtungen, die deutlich vom erwarteten Verhalten abweichen.\nIn Zeitreihen bedeutet das:\nWichtig ist: Anomalien sind kontextabhängig.",
+    "crumbs": [
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>7 Anomalien</span>"
+    ]
+  },
+  {
+    "objectID": "skript/07-anomalien.html#beispielsignal-mit-ausreißern",
+    "href": "skript/07-anomalien.html#beispielsignal-mit-ausreißern",
+    "title": "7  7 Anomalien",
+    "section": "8.1 7.1 Beispielsignal mit Ausreißern",
+    "text": "8.1 7.1 Beispielsignal mit Ausreißern\n\nimport numpy as np\nimport pandas as pd\nimport matplotlib.pyplot as plt\n\nrng = np.random.default_rng(99)\n\nt = pd.date_range(\"2025-01-01\", periods=24*10, freq=\"h\")\ntrend = np.linspace(0, 2, len(t))\nseason = 0.8 * np.sin(2*np.pi*(t.hour)/24)\nnoise = 0.3 * rng.normal(size=len(t))\n\ns = pd.Series(10 + trend + season + noise, index=t, name=\"signal\")\n\n# künstliche Anomalien\ns.iloc[40] += 4\ns.iloc[120] -= 3\n\ns.plot(title=\"Signal mit Anomalien\")\nplt.show()",
+    "crumbs": [
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>7 Anomalien</span>"
+    ]
+  },
+  {
+    "objectID": "skript/07-anomalien.html#globale-z-score-methode",
+    "href": "skript/07-anomalien.html#globale-z-score-methode",
+    "title": "7  7 Anomalien",
+    "section": "8.2 7.2 Globale Z-Score Methode",
+    "text": "8.2 7.2 Globale Z-Score Methode\nWir standardisieren die gesamte Zeitreihe.\n\nPandasNumPy\n\n\n\nz = (s - s.mean()) / s.std()\nanomalies = s[abs(z) &gt; 3]\n\nax = s.plot(label=\"Signal\")\nanomalies.plot(ax=ax, linestyle=\"None\", marker=\"o\", label=\"Anomalie\")\nplt.legend()\nplt.title(\"Anomalien (Z-Score)\")\nplt.show()\n\n\n\n\n\n\n\n\n\n\n\ny = s.to_numpy()\n\nz_np = (y - np.mean(y)) / np.std(y)\nanomalies_idx = np.where(np.abs(z_np) &gt; 3)[0]\n\nplt.plot(y, label=\"Signal\")\nplt.scatter(anomalies_idx, y[anomalies_idx], label=\"Anomalie\")\nplt.legend()\nplt.title(\"Anomalien (NumPy Z-Score)\")\nplt.show()\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nWarnungAchtung\n\n\n\nZ-Score funktioniert schlecht bei starkem Trend oder Saison, weil globale Mittelwerte verzerren.",
+    "crumbs": [
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>7 Anomalien</span>"
+    ]
+  },
+  {
+    "objectID": "skript/07-anomalien.html#lokale-anomalie-baseline-residuum",
+    "href": "skript/07-anomalien.html#lokale-anomalie-baseline-residuum",
+    "title": "7  7 Anomalien",
+    "section": "8.3 7.3 Lokale Anomalie (Baseline + Residuum)",
+    "text": "8.3 7.3 Lokale Anomalie (Baseline + Residuum)\nStatt globaler Standardisierung definieren wir eine lokale Baseline.\n\nbaseline = s.ewm(span=24, adjust=False).mean()\nresidual = s - baseline\n\nscore = (residual - residual.mean()) / residual.std()\nanomalies_local = s[abs(score) &gt; 3]\n\nax = s.plot(alpha=0.6, label=\"Signal\")\nbaseline.plot(ax=ax, label=\"Baseline\")\nanomalies_local.plot(ax=ax, linestyle=\"None\", marker=\"o\", label=\"Anomalie\")\nplt.legend()\nplt.title(\"Lokale Anomalien (EWMA-Baseline)\")\nplt.show()\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nTippInterpretation\n\n\n\nLokale Verfahren sind robuster, wenn Trend oder Saison vorhanden sind.",
+    "crumbs": [
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>7 Anomalien</span>"
+    ]
+  },
+  {
+    "objectID": "skript/07-anomalien.html#rolling-standardabweichung",
+    "href": "skript/07-anomalien.html#rolling-standardabweichung",
+    "title": "7  7 Anomalien",
+    "section": "8.4 7.4 Rolling-Standardabweichung",
+    "text": "8.4 7.4 Rolling-Standardabweichung\nAnomalien können auch als starke Abweichung relativ zur lokalen Varianz definiert werden.\n\nrolling_std = s.rolling(\"24h\").std()\nrolling_mean = s.rolling(\"24h\").mean()\n\nupper = rolling_mean + 3 * rolling_std\nlower = rolling_mean - 3 * rolling_std\n\nax = s.plot(label=\"Signal\")\nupper.plot(ax=ax, linestyle=\"--\", label=\"Upper Bound\")\nlower.plot(ax=ax, linestyle=\"--\", label=\"Lower Bound\")\nplt.legend()\nplt.title(\"Anomalien via Rolling-Bounds\")\nplt.show()",
+    "crumbs": [
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>7 Anomalien</span>"
+    ]
+  },
+  {
+    "objectID": "skript/07-anomalien.html#strukturbruch-vs-ausreißer",
+    "href": "skript/07-anomalien.html#strukturbruch-vs-ausreißer",
+    "title": "7  7 Anomalien",
+    "section": "8.5 7.5 Strukturbruch vs Ausreißer",
+    "text": "8.5 7.5 Strukturbruch vs Ausreißer\nEin einzelner Peak → Ausreißer\nDauerhafte Niveauänderung → Strukturbruch\nBeide erfordern unterschiedliche Interpretation.\n\n\n\n\n\n\n\nHinweisMethodischer Hinweis\n\n\n\nBevor Sie Anomalien markieren:\n\nTrend prüfen\n\nSaison prüfen\n\nBaseline definieren\n\nSchwellenwert begründen",
+    "crumbs": [
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>7 Anomalien</span>"
+    ]
+  },
+  {
+    "objectID": "skript/07-anomalien.html#mini-aufgaben",
+    "href": "skript/07-anomalien.html#mini-aufgaben",
+    "title": "7  7 Anomalien",
+    "section": "8.6 7.6 Mini-Aufgaben",
+    "text": "8.6 7.6 Mini-Aufgaben\n\nEntfernen Sie den Trend vor Anwendung des Z-Scores.\n\nWie verändert sich das Ergebnis?\n\nVerringern Sie den Schwellenwert von 3 auf 2.\n\nWas passiert?\n\nSimulieren Sie einen dauerhaften Niveau-Sprung.\n\nWird dieser als Anomalie erkannt?",
+    "crumbs": [
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>7 Anomalien</span>"
+    ]
+  },
+  {
+    "objectID": "skript/08-forecasting-baselines.html",
+    "href": "skript/08-forecasting-baselines.html",
+    "title": "8  8 Forecasting-Baselines & Bewertung",
+    "section": "",
+    "text": "9 8 Forecasting-Baselines & Bewertung\nBevor komplexe Modelle eingesetzt werden, sollten immer einfache Baseline-Modelle definiert werden.\nBaselines beantworten die Frage:",
+    "crumbs": [
+      "<span class='chapter-number'>8</span>  <span class='chapter-title'>8 Forecasting-Baselines & Bewertung</span>"
+    ]
+  },
+  {
+    "objectID": "skript/08-forecasting-baselines.html#beispielzeitreihe",
+    "href": "skript/08-forecasting-baselines.html#beispielzeitreihe",
+    "title": "8  8 Forecasting-Baselines & Bewertung",
+    "section": "9.1 8.1 Beispielzeitreihe",
+    "text": "9.1 8.1 Beispielzeitreihe\n\nimport numpy as np\nimport pandas as pd\nimport matplotlib.pyplot as plt\n\nrng = np.random.default_rng(123)\n\nt = pd.date_range(\"2025-01-01\", periods=24*14, freq=\"h\")\ntrend = np.linspace(0, 2, len(t))\nseason = 0.9 * np.sin(2*np.pi*(t.hour)/24)\nnoise = 0.3 * rng.normal(size=len(t))\n\ns = pd.Series(20 + trend + season + noise, index=t, name=\"signal\")\n\ns.plot(title=\"Zeitreihe für Forecasting\")\nplt.show()",
+    "crumbs": [
+      "<span class='chapter-number'>8</span>  <span class='chapter-title'>8 Forecasting-Baselines & Bewertung</span>"
+    ]
+  },
+  {
+    "objectID": "skript/08-forecasting-baselines.html#train-test-split",
+    "href": "skript/08-forecasting-baselines.html#train-test-split",
+    "title": "8  8 Forecasting-Baselines & Bewertung",
+    "section": "9.2 8.2 Train-Test-Split",
+    "text": "9.2 8.2 Train-Test-Split\nWir verwenden 80% der Daten für Training und 20% für Test.\n\nsplit = int(len(s) * 0.8)\n\ntrain = s.iloc[:split]\ntest = s.iloc[split:]\n\ntrain.index.min(), train.index.max(), test.index.min(), test.index.max()\n\n(Timestamp('2025-01-01 00:00:00'),\n Timestamp('2025-01-12 03:00:00'),\n Timestamp('2025-01-12 04:00:00'),\n Timestamp('2025-01-14 23:00:00'))",
+    "crumbs": [
+      "<span class='chapter-number'>8</span>  <span class='chapter-title'>8 Forecasting-Baselines & Bewertung</span>"
+    ]
+  },
+  {
+    "objectID": "skript/08-forecasting-baselines.html#naive-forecast",
+    "href": "skript/08-forecasting-baselines.html#naive-forecast",
+    "title": "8  8 Forecasting-Baselines & Bewertung",
+    "section": "9.3 8.3 Naive Forecast",
+    "text": "9.3 8.3 Naive Forecast\nNächster Wert = letzter beobachteter Wert.\n\nPandasNumPy\n\n\n\nnaive = test.copy()\nnaive[:] = train.iloc[-1]\n\n\n\n\ny = s.to_numpy()\ntrain_np = y[:split]\ntest_np = y[split:]\n\nnaive_np = np.full_like(test_np, train_np[-1])",
+    "crumbs": [
+      "<span class='chapter-number'>8</span>  <span class='chapter-title'>8 Forecasting-Baselines & Bewertung</span>"
+    ]
+  },
+  {
+    "objectID": "skript/08-forecasting-baselines.html#seasonal-naive-24-stunden",
+    "href": "skript/08-forecasting-baselines.html#seasonal-naive-24-stunden",
+    "title": "8  8 Forecasting-Baselines & Bewertung",
+    "section": "9.4 8.4 Seasonal Naive (24 Stunden)",
+    "text": "9.4 8.4 Seasonal Naive (24 Stunden)\nNächster Wert = Wert von vor 24 Stunden.\n\nPandasNumPy\n\n\n\nseasonal_naive = s.shift(24).iloc[split:]\n\n\n\n\nseasonal_naive_np = y[split-24:-24]",
+    "crumbs": [
+      "<span class='chapter-number'>8</span>  <span class='chapter-title'>8 Forecasting-Baselines & Bewertung</span>"
+    ]
+  },
+  {
+    "objectID": "skript/08-forecasting-baselines.html#moving-average-baseline",
+    "href": "skript/08-forecasting-baselines.html#moving-average-baseline",
+    "title": "8  8 Forecasting-Baselines & Bewertung",
+    "section": "9.5 8.5 Moving Average Baseline",
+    "text": "9.5 8.5 Moving Average Baseline\nForecast = Mittelwert der letzten 24 Stunden.\n\nPandasNumPy\n\n\n\nma_value = train.iloc[-24:].mean()\nma_forecast = test.copy()\nma_forecast[:] = ma_value\n\n\n\n\nma_value_np = np.mean(train_np[-24:])\nma_forecast_np = np.full_like(test_np, ma_value_np)",
+    "crumbs": [
+      "<span class='chapter-number'>8</span>  <span class='chapter-title'>8 Forecasting-Baselines & Bewertung</span>"
+    ]
+  },
+  {
+    "objectID": "skript/08-forecasting-baselines.html#vergleich-visualisieren",
+    "href": "skript/08-forecasting-baselines.html#vergleich-visualisieren",
+    "title": "8  8 Forecasting-Baselines & Bewertung",
+    "section": "9.6 8.6 Vergleich visualisieren",
+    "text": "9.6 8.6 Vergleich visualisieren\n\nplt.figure()\ntrain.plot(label=\"Train\")\ntest.plot(label=\"Test\")\nnaive.plot(label=\"Naive\")\nseasonal_naive.plot(label=\"Seasonal Naive\")\nma_forecast.plot(label=\"MA(24)\")\nplt.legend()\nplt.title(\"Forecast Baselines\")\nplt.show()",
+    "crumbs": [
+      "<span class='chapter-number'>8</span>  <span class='chapter-title'>8 Forecasting-Baselines & Bewertung</span>"
+    ]
+  },
+  {
+    "objectID": "skript/08-forecasting-baselines.html#fehlermaße",
+    "href": "skript/08-forecasting-baselines.html#fehlermaße",
+    "title": "8  8 Forecasting-Baselines & Bewertung",
+    "section": "9.7 8.7 Fehlermaße",
+    "text": "9.7 8.7 Fehlermaße\nWir verwenden den Mean Absolute Error (MAE):\n\\[\nMAE = \\frac{1}{n} \\sum |y_{true} - y_{pred}|\n\\]\n\nPandasNumPy\n\n\n\ndef mae(y_true, y_pred):\n    return np.mean(np.abs(y_true - y_pred))\n\nprint(\"MAE Naive:\", mae(test, naive))\nprint(\"MAE Seasonal Naive:\", mae(test, seasonal_naive))\nprint(\"MAE MA(24):\", mae(test, ma_forecast))\n\nMAE Naive: 0.6298837368696829\nMAE Seasonal Naive: 0.3320412574311427\nMAE MA(24): 0.6228787570177815\n\n\n\n\n\ndef mae_np(y_true, y_pred):\n    return np.mean(np.abs(y_true - y_pred))\n\nprint(\"MAE Naive:\", mae_np(test_np, naive_np))\nprint(\"MAE Seasonal:\", mae_np(test_np, seasonal_naive_np))\nprint(\"MAE MA(24):\", mae_np(test_np, ma_forecast_np))\n\nMAE Naive: 0.6298837368696829\nMAE Seasonal: 0.3320412574311427\nMAE MA(24): 0.6228787570177815",
+    "crumbs": [
+      "<span class='chapter-number'>8</span>  <span class='chapter-title'>8 Forecasting-Baselines & Bewertung</span>"
+    ]
+  },
+  {
+    "objectID": "skript/08-forecasting-baselines.html#interpretation",
+    "href": "skript/08-forecasting-baselines.html#interpretation",
+    "title": "8  8 Forecasting-Baselines & Bewertung",
+    "section": "9.8 8.8 Interpretation",
+    "text": "9.8 8.8 Interpretation\nTypische Beobachtungen:\n\nBei starker Saison gewinnt häufig Seasonal Naive.\nBei schwachem Muster ist Naive oft überraschend stark.\nMoving Average glättet, reagiert aber träge auf Trendänderungen.\n\n\n\n\n\n\n\n\nTippMethodischer Hinweis\n\n\n\nBaseline-Vergleich ist keine Formalität, sondern eine Qualitätskontrolle.",
+    "crumbs": [
+      "<span class='chapter-number'>8</span>  <span class='chapter-title'>8 Forecasting-Baselines & Bewertung</span>"
+    ]
+  },
+  {
+    "objectID": "skript/08-forecasting-baselines.html#mini-aufgaben",
+    "href": "skript/08-forecasting-baselines.html#mini-aufgaben",
+    "title": "8  8 Forecasting-Baselines & Bewertung",
+    "section": "9.9 8.9 Mini-Aufgaben",
+    "text": "9.9 8.9 Mini-Aufgaben\n\nErhöhen Sie die Stärke der Saison.\n\nWelche Baseline gewinnt?\n\nEntfernen Sie die Saison vollständig.\n\nWelche Baseline wird besser?\n\nFügen Sie einen starken Trend hinzu.\n\nWie reagieren die Modelle?",
+    "crumbs": [
+      "<span class='chapter-number'>8</span>  <span class='chapter-title'>8 Forecasting-Baselines & Bewertung</span>"
+    ]
+  },
+  {
+    "objectID": "skript/09-lernzielkontrolle.html",
+    "href": "skript/09-lernzielkontrolle.html",
+    "title": "9  9 Lernzielkontrolle",
+    "section": "",
+    "text": "10 9 Lernzielkontrolle\nNutzen Sie diese Checkliste zur Selbstüberprüfung.",
+    "crumbs": [
+      "<span class='chapter-number'>9</span>  <span class='chapter-title'>9 Lernzielkontrolle</span>"
+    ]
+  },
+  {
+    "objectID": "skript/09-lernzielkontrolle.html#fachliche-kompetenzen",
+    "href": "skript/09-lernzielkontrolle.html#fachliche-kompetenzen",
+    "title": "9  9 Lernzielkontrolle",
+    "section": "10.1 9.1 Fachliche Kompetenzen",
+    "text": "10.1 9.1 Fachliche Kompetenzen\nIch kann …\n\neine Zeitreihe methodisch einordnen (Messprozess, Abtastrate).\neine Zeitreihe validieren (Sortierung, Duplikate, Missing Values).\nResampling begründet einsetzen (Aggregation vs. Interpolation).\nRolling Mean und EWMA unterscheiden und passend wählen.\nTrend und Saison konzeptionell trennen.\nLag-Features erzeugen und interpretieren.\nAutokorrelation interpretieren.\nAnomalien global und lokal definieren.\nBaseline-Forecasts implementieren.\nForecast-Modelle mit MAE bewerten.",
+    "crumbs": [
+      "<span class='chapter-number'>9</span>  <span class='chapter-title'>9 Lernzielkontrolle</span>"
+    ]
+  },
+  {
+    "objectID": "skript/09-lernzielkontrolle.html#verständnisfragen",
+    "href": "skript/09-lernzielkontrolle.html#verständnisfragen",
+    "title": "9  9 Lernzielkontrolle",
+    "section": "10.2 9.2 Verständnisfragen",
+    "text": "10.2 9.2 Verständnisfragen\n\nWarum ist die Abtastrate für die Interpretation einer Saison entscheidend?\nWann ist Interpolation problematisch?\nWarum kann ein Trend die Autokorrelation künstlich erhöhen?\nWarum sind Baselines methodisch wichtig?\nWodurch unterscheidet sich ein Strukturbruch von einem Ausreißer?\n\n\n\n\n\n\n\n\nTippHinweis\n\n\n\nWenn mehrere Punkte unsicher sind, wiederholen Sie gezielt die entsprechenden Kapitel und bearbeiten Sie die Übungsaufgaben.",
+    "crumbs": [
+      "<span class='chapter-number'>9</span>  <span class='chapter-title'>9 Lernzielkontrolle</span>"
+    ]
+  },
+  {
+    "objectID": "skript/10-uebung.html",
+    "href": "skript/10-uebung.html",
+    "title": "10  10 Übung: Zeitreihen-Workflow",
+    "section": "",
+    "text": "11 10 Übung: Zeitreihen-Workflow\nDiese Übung kombiniert mehrere Methoden aus dem Baustein.",
+    "crumbs": [
+      "<span class='chapter-number'>10</span>  <span class='chapter-title'>10 Übung: Zeitreihen-Workflow</span>"
+    ]
+  },
+  {
+    "objectID": "skript/10-uebung.html#aufgabe-1-eigene-zeitreihe-erzeugen",
+    "href": "skript/10-uebung.html#aufgabe-1-eigene-zeitreihe-erzeugen",
+    "title": "10  10 Übung: Zeitreihen-Workflow",
+    "section": "11.1 Aufgabe 1: Eigene Zeitreihe erzeugen",
+    "text": "11.1 Aufgabe 1: Eigene Zeitreihe erzeugen\nErzeugen Sie eine Zeitreihe mit:\n\n10 Tagen, stündlicher Abtastrate\nTrend\nTages-Saison\nRauschen\nmindestens 3 Anomalien\n\nVisualisieren Sie die Zeitreihe.",
+    "crumbs": [
+      "<span class='chapter-number'>10</span>  <span class='chapter-title'>10 Übung: Zeitreihen-Workflow</span>"
+    ]
+  },
+  {
+    "objectID": "skript/10-uebung.html#aufgabe-2-validierung",
+    "href": "skript/10-uebung.html#aufgabe-2-validierung",
+    "title": "10  10 Übung: Zeitreihen-Workflow",
+    "section": "11.2 Aufgabe 2: Validierung",
+    "text": "11.2 Aufgabe 2: Validierung\nBauen Sie absichtlich Fehler ein:\n\nDuplikate\nMissing Values\nUnsortierte Zeitpunkte\n\nImplementieren Sie eine saubere Validierung.",
+    "crumbs": [
+      "<span class='chapter-number'>10</span>  <span class='chapter-title'>10 Übung: Zeitreihen-Workflow</span>"
+    ]
+  },
+  {
+    "objectID": "skript/10-uebung.html#aufgabe-3-resampling",
+    "href": "skript/10-uebung.html#aufgabe-3-resampling",
+    "title": "10  10 Übung: Zeitreihen-Workflow",
+    "section": "11.3 Aufgabe 3: Resampling",
+    "text": "11.3 Aufgabe 3: Resampling\n\nAggregieren Sie auf Tagesmittel.\nVergleichen Sie Original und Aggregation.\nInterpretieren Sie Informationsverlust.",
+    "crumbs": [
+      "<span class='chapter-number'>10</span>  <span class='chapter-title'>10 Übung: Zeitreihen-Workflow</span>"
+    ]
+  },
+  {
+    "objectID": "skript/10-uebung.html#aufgabe-4-glättung",
+    "href": "skript/10-uebung.html#aufgabe-4-glättung",
+    "title": "10  10 Übung: Zeitreihen-Workflow",
+    "section": "11.4 Aufgabe 4: Glättung",
+    "text": "11.4 Aufgabe 4: Glättung\n\nTesten Sie Rolling-Fenster von 6H, 24H, 72H.\nWelche Struktur wird jeweils sichtbar?",
+    "crumbs": [
+      "<span class='chapter-number'>10</span>  <span class='chapter-title'>10 Übung: Zeitreihen-Workflow</span>"
+    ]
+  },
+  {
+    "objectID": "skript/10-uebung.html#aufgabe-5-anomalien",
+    "href": "skript/10-uebung.html#aufgabe-5-anomalien",
+    "title": "10  10 Übung: Zeitreihen-Workflow",
+    "section": "11.5 Aufgabe 5: Anomalien",
+    "text": "11.5 Aufgabe 5: Anomalien\n\nImplementieren Sie eine EWMA-Baseline.\nDetektieren Sie Anomalien.\nVariieren Sie den Schwellenwert.",
+    "crumbs": [
+      "<span class='chapter-number'>10</span>  <span class='chapter-title'>10 Übung: Zeitreihen-Workflow</span>"
+    ]
+  },
+  {
+    "objectID": "skript/10-uebung.html#aufgabe-6-forecast-baselines",
+    "href": "skript/10-uebung.html#aufgabe-6-forecast-baselines",
+    "title": "10  10 Übung: Zeitreihen-Workflow",
+    "section": "11.6 Aufgabe 6: Forecast-Baselines",
+    "text": "11.6 Aufgabe 6: Forecast-Baselines\n\nTrain-Test-Split (80/20)\nNaive\nSeasonal Naive (24H)\nMA(24)\n\nVergleichen Sie die MAE-Werte und interpretieren Sie das Ergebnis.\n\n\n\n\n\n\n\nHinweisAbgabeformat (optional)\n\n\n\nPlots + kurze Interpretation (Stichpunkte).",
+    "crumbs": [
+      "<span class='chapter-number'>10</span>  <span class='chapter-title'>10 Übung: Zeitreihen-Workflow</span>"
+    ]
+  },
+  {
+    "objectID": "skript/11-klausurfragen.html",
+    "href": "skript/11-klausurfragen.html",
+    "title": "11  11 Klausurfragen",
+    "section": "",
+    "text": "12 11 Klausurfragen",
+    "crumbs": [
+      "<span class='chapter-number'>11</span>  <span class='chapter-title'>11 Klausurfragen</span>"
+    ]
+  },
+  {
+    "objectID": "skript/11-klausurfragen.html#verständnisfragen",
+    "href": "skript/11-klausurfragen.html#verständnisfragen",
+    "title": "11  11 Klausurfragen",
+    "section": "12.1 Verständnisfragen",
+    "text": "12.1 Verständnisfragen\n\nDefinieren Sie eine Zeitreihe.\nWas ist der Unterschied zwischen Aggregation und Interpolation?\nErklären Sie Rolling Mean und EWMA konzeptionell.\nWas ist ein Lag-Feature?\nWas misst die Autokorrelation?\nWarum kann Trend die Autokorrelation beeinflussen?\nErklären Sie den Unterschied zwischen globaler und lokaler Anomalie-Detektion.\nWas ist eine Forecast-Baseline?\nWarum sind Baselines methodisch notwendig?\nWas misst der MAE?",
+    "crumbs": [
+      "<span class='chapter-number'>11</span>  <span class='chapter-title'>11 Klausurfragen</span>"
+    ]
+  },
+  {
+    "objectID": "skript/11-klausurfragen.html#transferfragen",
+    "href": "skript/11-klausurfragen.html#transferfragen",
+    "title": "11  11 Klausurfragen",
+    "section": "12.2 Transferfragen",
+    "text": "12.2 Transferfragen\n\nSie erhalten Maschinendaten mit starker Wochenperiodik.\n\nWelche Schritte würden Sie durchführen?\n\nEine Zeitreihe zeigt plötzlich dauerhaft höhere Werte.\n\nAusreißer oder Strukturbruch? Begründen Sie.\n\nZwei Zeitreihen sollen verglichen werden, eine minütlich, eine stündlich gemessen.\n\nWelche Schritte sind notwendig?\n\n\n\n\n\n\n\n\n\nWarnungHinweis zur Prüfungsvorbereitung\n\n\n\nBegründen Sie Ihre Antworten stets methodisch. Reine Definitionen reichen meist nicht aus.",
+    "crumbs": [
+      "<span class='chapter-number'>11</span>  <span class='chapter-title'>11 Klausurfragen</span>"
+    ]
+  }
+]
