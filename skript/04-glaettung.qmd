@@ -130,9 +130,9 @@ weil ältere Werte exponentiell weniger Einfluss haben.
 
 EWMA kann rekursiv berechnet werden:
 
-\[
+$$
 m_t = \alpha \cdot y_t + (1-\alpha)\cdot m_{t-1}
-\]
+$$
 
 ```{python}
 import numpy as np
